@@ -6,6 +6,8 @@ import logging
 import os
 from typing import Iterable, Optional
 
+import numpy as np
+
 import bio2bel_drugbank
 import bio2bel_hippie
 from pybel import from_pickle, to_pickle
@@ -25,6 +27,14 @@ hippie_keen_path = os.path.join(DATA_DIR, 'hippie.keen.tsv')
 
 drugbank_bel_path = os.path.join(DATA_DIR, 'drugbank.bel.pickle')
 drugbank_keen_path = os.path.join(DATA_DIR, 'drugbank.keen.tsv')
+
+
+def get_full_matrix():
+    """Get all built data as a matrix."""
+    return np.concatenate([
+        np.loadtxt(fname, dtype=str, delimiter='\t')
+        for fname in iterate_source_paths()
+    ])
 
 
 def iterate_source_paths() -> Iterable[str]:
