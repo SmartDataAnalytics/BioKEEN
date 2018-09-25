@@ -1,0 +1,29 @@
+#########################
+# Flake8 Configuration  #
+# (.flake8)             #
+# (formerly in tox.ini) #
+#########################
+[flake8]
+# flake8
+ignore = E501
+exclude =
+    .tox,
+    .git,
+    __pycache__,
+    docs/source/conf.py,
+    build,
+    dist,
+    *.pyc,
+    *.egg-info,
+    .cache,
+    .eggs
+format = ${cyan}%(path)s${reset}:${yellow_bold}%(row)d${reset}:${green_bold}%(col)d${reset}: ${red_bold}%(code)s${reset} %(text)s
+
+# flake8-import-order
+application-import-names =
+	biokeen
+	tests
+import-order-style = pycharm
+
+# mccabe
+max-complexity = 10

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Setup module for the Human Brain Pharmacome package."""
+"""Setup module for BioKEEN."""
 
 import setuptools
 

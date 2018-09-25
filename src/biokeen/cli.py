@@ -1,16 +1,23 @@
 # -*- coding: utf-8 -*-
 
-"""CLI for BioKEEN."""
+"""A command line interface for BioKEEN."""
 
 import click
 
 from bio2bel.constants import get_global_connection
-from .sources import ensure_drugbank, ensure_hippie
+from .build import ensure_drugbank, ensure_hippie, iterate_source_paths
 
 
 @click.group()
 def main():
-    """BioKEEN Command Line Interface."""
+    """A command line interface for BioKEEN."""
+
+
+@main.command()
+def ls():
+    """List built data."""
+    for path in iterate_source_paths():
+        click.echo(path)
 
 
 @main.group()
