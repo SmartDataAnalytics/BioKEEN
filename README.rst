@@ -34,7 +34,7 @@ To start BioKEEN, please run the following command:
     
 .. code-block:: sh
 
-    keen
+    biokeen
     
 or alternatively:    
 
