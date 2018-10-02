@@ -34,7 +34,7 @@ def main():
     """A command line interface for BioKEEN."""
 
 
-@click.command()
+@main.command()
 @click.option('-c', '--config', type=click.File(), default=CONFIG_PATH, show_default=True)
 @click.option('-o', '--output-directory', help='Output directory', type=click.Path(file_okay=False, dir_okay=True))
 @click.option('-p', '--training-path', help='Data path', type=click.Path(file_okay=True, dir_okay=False))
