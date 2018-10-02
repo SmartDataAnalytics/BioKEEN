@@ -3,6 +3,7 @@
 """A command line interface for BioKEEN."""
 
 import importlib
+import json
 import os
 import sys
 
@@ -10,11 +11,13 @@ import click
 
 from bio2bel.constants import get_global_connection
 from bio2bel.manager.bel_manager import BELManagerMixin
+from biokeen.constants import DATA_DIR
+from keen import run
 from pybel import from_pickle, to_pickle
 from .build import ensure_drugbank, ensure_hippie, iterate_source_paths
-from .constants import DATA_DIR
 from .convert import to_keen_file
 
+CONFIG_PATH = os.path.join(DATA_DIR, "configuration.json")
 EMOJI = '🍩'
 
 connection_option = click.option(
@@ -29,6 +32,21 @@ connection_option = click.option(
 @click.group()
 def main():
     """A command line interface for BioKEEN."""
+
+
+@click.command()
+@click.option('-c', '--config', type=click.File(), default=CONFIG_PATH, show_default=True)
+@click.option('-o', '--output-directory', help='Output directory', type=click.Path(file_okay=False, dir_okay=True))
+@click.option('-p', '--training-path', help='Data path', type=click.Path(file_okay=True, dir_okay=False))
+def keen(config, output_directory, training_path):
+    """Run KEEN."""
+    config = json.load(config)
+
+    run(
+        config,
+        output_directory=output_directory,
+        training_path=training_path,
+    )
 
 
 @main.command()
@@ -102,8 +120,11 @@ def get(name, connection, rebuild):
     else:
         click.secho(f'{EMOJI} {bio2bel_module_name} has already been populated', bold=True)
 
+    click.secho(f'{EMOJI} generating BEL for {bio2bel_module_name}', bold=True)
     graph = manager.to_bel()
+    click.echo(f'Summary: {graph.number_of_nodes()} nodes / {graph.number_of_edges()} edges')
     to_pickle(graph, pickle_path)
+    click.secho(f'{EMOJI} generating KEEN for {bio2bel_module_name}', bold=True)
     to_keen_file(graph, keen_df_path)
 
 
