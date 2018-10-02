@@ -2,10 +2,13 @@
 
 """A command line interface for BioKEEN."""
 
-import click
+import sys
 
+import click
 from bio2bel.constants import get_global_connection
+
 from .build import ensure_drugbank, ensure_hippie, iterate_source_paths
+from .convert import to_keen_file
 
 
 @click.group()
@@ -56,3 +59,29 @@ def hippie(connection):
 def drugbank(connection):
     """Build DrugBank."""
     ensure_drugbank(connection)
+
+
+@main.command()
+@click.option("-f", "--file", type=click.File("w"), default=sys.stdout)
+@click.argument("name")
+def get(name, file):
+    """Install, populate, and build Bio2BEL repository."""
+    import importlib
+
+    b_name = f"bio2bel_{name}"
+
+    try:
+        b_module = importlib.import_module(b_name)
+    except ImportError:
+        import pip
+        pip.main(["install", b_name])
+        try:
+            b_module = importlib.import_module(b_name)
+        except ImportError:
+            sys.exit(1)
+    manager = b_module.Manager()
+    if not manager.is_populated():
+        manager.populate()
+
+    graph = manager.to_bel()
+    to_keen_file(graph, file)
