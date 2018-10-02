@@ -5,10 +5,13 @@
 import sys
 
 import click
-from bio2bel.constants import get_global_connection
 
+from bio2bel.constants import get_global_connection
+from bio2bel.manager.bel_manager import BELManagerMixin
 from .build import ensure_drugbank, ensure_hippie, iterate_source_paths
 from .convert import to_keen_file
+
+EMOJI = '🍩'
 
 
 @click.group()
@@ -68,20 +71,36 @@ def get(name, file):
     """Install, populate, and build Bio2BEL repository."""
     import importlib
 
-    b_name = f"bio2bel_{name}"
+    package = f"bio2bel_{name}"
 
     try:
-        b_module = importlib.import_module(b_name)
+        b_module = importlib.import_module(package)
     except ImportError:
-        import pip
-        pip.main(["install", b_name])
+        click.secho(f'{EMOJI} pip install {package}', bold=True)
+        # Install this package using pip
+        # https://stackoverflow.com/questions/12332975/installing-python-module-within-code
+        from pip._internal import main as pip_main
+        pip_main(['install', package])
+
         try:
-            b_module = importlib.import_module(b_name)
+            b_module = importlib.import_module(package)
         except ImportError:
+            click.secho(f'{EMOJI} failed to import {package}', bold=True)
             sys.exit(1)
+    else:
+        click.secho(f'{EMOJI} imported {package}', bold=True)
+
+    if not issubclass(b_module.Manager, BELManagerMixin):
+        click.secho(f'{EMOJI} {package} does not produce BEL', bold=True, fg='red')
+        sys.exit(1)
+
     manager = b_module.Manager()
+
     if not manager.is_populated():
+        click.secho(f'{EMOJI} populating {package}', bold=True)
         manager.populate()
+    else:
+        click.secho(f'{EMOJI} {package} has already been populated', bold=True)
 
     graph = manager.to_bel()
     to_keen_file(graph, file)
