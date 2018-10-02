@@ -10,8 +10,8 @@ import pandas as pd
 from tqdm import tqdm
 
 from pybel import BELGraph
-from pybel.constants import ACTIVITY, HAS_COMPONENT, MODIFIER, OBJECT, REGULATES, RELATION, SUBJECT
-from pybel.dsl import BaseEntity
+from pybel.constants import ACTIVITY, DIRECTLY_DECREASES, HAS_COMPONENT, MODIFIER, OBJECT, REGULATES, RELATION, SUBJECT
+from pybel.dsl import BaseEntity, MicroRna, Rna
 
 __all__ = [
     'to_keen_file',
@@ -59,6 +59,14 @@ def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Tuple
         return (
             f'{u.namespace}:{v.identifier or u.name}',
             'activity directly negatively regulates activity of',
+            f'{v.namespace}:{v.identifier or v.name}',
+        )
+
+    elif relation == DIRECTLY_DECREASES and isinstance(u, MicroRna) and isinstance(v, Rna):
+        # this is a mircoRNA regulation
+        return (
+            f'{u.namespace}:{v.identifier or u.name}',
+            'represses expression of',
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
