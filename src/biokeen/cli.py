@@ -2,16 +2,28 @@
 
 """A command line interface for BioKEEN."""
 
+import importlib
+import os
 import sys
 
 import click
 
 from bio2bel.constants import get_global_connection
 from bio2bel.manager.bel_manager import BELManagerMixin
+from pybel import from_pickle, to_pickle
 from .build import ensure_drugbank, ensure_hippie, iterate_source_paths
+from .constants import DATA_DIR
 from .convert import to_keen_file
 
 EMOJI = '🍩'
+
+connection_option = click.option(
+    '-c',
+    '--connection',
+    default=get_global_connection(),
+    show_default=True,
+    help='Bio2BEL database connection string',
+)
 
 
 @click.group()
@@ -29,15 +41,6 @@ def ls():
 @main.group()
 def build():
     """Build Bio2BEL resources."""
-
-
-connection_option = click.option(
-    '-c',
-    '--connection',
-    default=get_global_connection(),
-    show_default=True,
-    help='Database connection string.',
-)
 
 
 @build.command()
@@ -65,16 +68,50 @@ def drugbank(connection):
 
 
 @main.command()
-@click.option("-f", "--file", type=click.File("w"), default=sys.stdout)
 @click.argument("name")
-def get(name, file):
+@connection_option
+@click.option('-r', '--rebuild', is_flag=True)
+def get(name, connection, rebuild):
     """Install, populate, and build Bio2BEL repository."""
-    import importlib
+    bio2bel_module_name = f"bio2bel_{name}"
+    keen_df_path = os.path.join(DATA_DIR, f'{name}.keen.tsv')
+    pickle_path = os.path.join(DATA_DIR, f'{name}.bel.pickle')
 
-    package = f"bio2bel_{name}"
+    if os.path.exists(keen_df_path) and not rebuild:
+        click.secho(f'{EMOJI} {bio2bel_module_name} has already been retrieved. See: {keen_df_path}', bold=True)
+        sys.exit(0)
 
+    if os.path.exists(pickle_path):
+        click.secho(f'{EMOJI} loaded {bio2bel_module_name} pickle: {pickle_path}', bold=True)
+        graph = from_pickle(pickle_path)
+        to_keen_file(graph, keen_df_path)
+        sys.exit(0)
+
+    bio2bel_module = _import_bio2bel_module(bio2bel_module_name)
+    click.secho(f'{EMOJI} imported {bio2bel_module_name}', bold=True)
+
+    if not issubclass(bio2bel_module.Manager, BELManagerMixin):
+        click.secho(f'{EMOJI} {bio2bel_module_name} does not produce BEL', bold=True, fg='red')
+        sys.exit(1)
+
+    manager = bio2bel_module.Manager(connection=connection)
+
+    if not manager.is_populated():
+        click.secho(f'{EMOJI} populating {bio2bel_module_name}', bold=True)
+        manager.populate()
+    else:
+        click.secho(f'{EMOJI} {bio2bel_module_name} has already been populated', bold=True)
+
+    graph = manager.to_bel()
+    to_pickle(graph, pickle_path)
+    to_keen_file(graph, keen_df_path)
+
+
+def _import_bio2bel_module(package: str):
+    """Import a package, or install it."""
     try:
         b_module = importlib.import_module(package)
+
     except ImportError:
         click.secho(f'{EMOJI} pip install {package}', bold=True)
         # Install this package using pip
@@ -83,24 +120,9 @@ def get(name, file):
         pip_main(['install', package])
 
         try:
-            b_module = importlib.import_module(package)
+            return importlib.import_module(package)
         except ImportError:
             click.secho(f'{EMOJI} failed to import {package}', bold=True)
             sys.exit(1)
-    else:
-        click.secho(f'{EMOJI} imported {package}', bold=True)
 
-    if not issubclass(b_module.Manager, BELManagerMixin):
-        click.secho(f'{EMOJI} {package} does not produce BEL', bold=True, fg='red')
-        sys.exit(1)
-
-    manager = b_module.Manager()
-
-    if not manager.is_populated():
-        click.secho(f'{EMOJI} populating {package}', bold=True)
-        manager.populate()
-    else:
-        click.secho(f'{EMOJI} {package} has already been populated', bold=True)
-
-    graph = manager.to_bel()
-    to_keen_file(graph, file)
+    return b_module
