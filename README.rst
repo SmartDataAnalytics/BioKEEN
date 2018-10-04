@@ -2,7 +2,7 @@ BioKEEN |build|
 ===============
 BioKEEN is a package for training and evaluating biological knowledge graph embeddings built on
 `KEEN <https://github.com/SmartDataAnalytics/KEEN>`_.
- 
+
 **Currently, the framework is under heavy development.**
 
 Installation
@@ -24,17 +24,17 @@ Installation
 How to Use
 ----------
 To start BioKEEN, please run the following command:
-    
+
 .. code-block:: sh
 
     biokeen
-    
-or alternatively:    
+
+or alternatively:
 
 .. code-block:: python
 
     python3 -m biokeen
-    
+
 then the command line interface will assist you to configure your experiments.
 
 .. |build| image:: https://travis-ci.org/SmartDataAnalytics/BioKEEN.svg?branch=master
