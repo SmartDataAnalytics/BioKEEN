@@ -10,7 +10,10 @@ import pandas as pd
 from tqdm import tqdm
 
 from pybel import BELGraph
-from pybel.constants import ACTIVITY, DIRECTLY_DECREASES, HAS_COMPONENT, MODIFIER, OBJECT, REGULATES, RELATION, SUBJECT
+from pybel.constants import (
+    ACTIVITY, DIRECTLY_DECREASES, HAS_COMPONENT, MODIFIER, OBJECT, PART_OF, REGULATES, RELATION,
+    SUBJECT, TRANSCRIBED_TO, TRANSLATED_TO,
+)
 from pybel.dsl import BaseEntity, MicroRna, Rna
 
 __all__ = [
@@ -48,16 +51,23 @@ def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Tuple
     subject_modifier = data.get(SUBJECT)
     object_modifier = data.get(OBJECT)
 
-    if relation == HAS_COMPONENT:
+    if relation in HAS_COMPONENT:
         return (
             f'{v.namespace}:{v.identifier or v.name}',
             'part of',
             str(u),
         )
 
+    elif relation == PART_OF:
+        return (
+            f'{u.namespace}:{u.identifier or u.name}',
+            'part of',
+            f'{v.namespace}:{v.identifier or v.name}',
+        )
+
     elif relation == REGULATES and object_modifier and object_modifier.get(MODIFIER) == ACTIVITY:
         return (
-            f'{u.namespace}:{v.identifier or u.name}',
+            f'{u.namespace}:{u.identifier or u.name}',
             'activity directly negatively regulates activity of',
             f'{v.namespace}:{v.identifier or v.name}',
         )
@@ -65,8 +75,22 @@ def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Tuple
     elif relation == DIRECTLY_DECREASES and isinstance(u, MicroRna) and isinstance(v, Rna):
         # this is a mircoRNA regulation
         return (
-            f'{u.namespace}:{v.identifier or u.name}',
+            f'{u.namespace}:{u.identifier or u.name}',
             'represses expression of',
+            f'{v.namespace}:{v.identifier or v.name}',
+        )
+
+    elif relation == TRANSLATED_TO:
+        return (
+            f'{u.namespace}:{u.identifier or u.name}',
+            'ribosomally translates to',
+            f'{v.namespace}:{v.identifier or v.name}',
+        )
+
+    elif relation == TRANSCRIBED_TO:
+        return (
+            f'{u.namespace}:{u.identifier or u.name}',
+            'transcribed to',
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
