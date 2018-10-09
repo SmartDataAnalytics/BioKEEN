@@ -12,8 +12,8 @@ import click
 from bio2bel.constants import get_global_connection
 from bio2bel.manager.bel_manager import BELManagerMixin
 from biokeen.constants import DATA_DIR
-from keen import run
 from pybel import from_pickle, to_pickle
+from pykeen import run
 from .build import ensure_drugbank, ensure_hippie, iterate_source_paths
 from .convert import to_keen_file
 
