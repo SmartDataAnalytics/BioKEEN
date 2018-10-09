@@ -26,7 +26,6 @@ jobs:
     - env: TOXENV=docs
 matrix:
   allow_failures:
-      - env: TOXENV=flake8
       - env: TOXENV=vulture
       - env: TOXENV=xenon
       - python: 3.7

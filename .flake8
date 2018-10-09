@@ -22,6 +22,9 @@ format = ${cyan}%(path)s${reset}:${yellow_bold}%(row)d${reset}:${green_bold}%(co
 # flake8-import-order
 application-import-names =
 	biokeen
+    pykeen
+    pybel
+    bio2bel
 	tests
 import-order-style = pycharm
 

@@ -30,7 +30,7 @@ connection_option = click.option(
 
 
 @click.group()
-def main():
+def main():  # noqa: D401
     """A command line interface for BioKEEN."""
 
 

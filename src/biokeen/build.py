@@ -8,8 +8,6 @@ from typing import Iterable, Optional
 
 import numpy as np
 
-import bio2bel_drugbank
-import bio2bel_hippie
 from pybel import from_pickle, to_pickle
 from .constants import DATA_DIR
 from .convert import to_keen_file
@@ -38,7 +36,7 @@ def get_full_matrix():
 
 
 def iterate_source_paths() -> Iterable[str]:
-    """Iterate over the source paths"""
+    """Iterate over the source paths."""
     for file_name in os.listdir(DATA_DIR):
         if 'keen.tsv' in file_name:
             yield os.path.join(DATA_DIR, file_name)
@@ -46,6 +44,8 @@ def iterate_source_paths() -> Iterable[str]:
 
 def ensure_hippie(connection: Optional[str] = None):
     """Ensure the HIPPIE database is built."""
+    import bio2bel_hippie
+
     if os.path.exists(hippie_bel_path):
         logger.info('loading from pickle')
         hippie_graph = from_pickle(hippie_bel_path)
@@ -64,6 +64,8 @@ def ensure_hippie(connection: Optional[str] = None):
 
 def ensure_drugbank(connection: Optional[str] = None):
     """Ensure the DrugBank database is built."""
+    import bio2bel_drugbank
+
     if os.path.exists(drugbank_bel_path):
         drugbank_graph = from_pickle(drugbank_bel_path)
     else:
