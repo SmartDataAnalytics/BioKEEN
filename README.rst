@@ -5,6 +5,9 @@ BioKEEN is a package for training and evaluating biological knowledge graph embe
 
 **Currently, the framework is under heavy development.**
 
+.. |build| image:: https://travis-ci.org/SmartDataAnalytics/BioKEEN.svg?branch=master
+    :target: https://travis-ci.org/SmartDataAnalytics/BioKEEN
+
 Installation
 ------------
 1. ``BioKEEN`` can be installed with the following commands:
@@ -37,5 +40,14 @@ or alternatively:
 
 then the command line interface will assist you to configure your experiments.
 
-.. |build| image:: https://travis-ci.org/SmartDataAnalytics/BioKEEN.svg?branch=master
-    :target: https://travis-ci.org/SmartDataAnalytics/BioKEEN
+Getting Bio2BEL Data
+********************
+To download and structure the data from a `Bio2BEL <https://github.com/bio2bel>`_
+repository, run:
+
+.. code-block:: python
+
+    biokeen get <name>
+    
+Where ``<name>`` can be any repository name in Bio2BEL like ``hippie``, ``mirtarbase``
+and others.
