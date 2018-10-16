@@ -8,6 +8,7 @@ import os
 import sys
 
 import click
+import pandas as pd
 
 from bio2bel.constants import get_global_connection
 from bio2bel.manager.bel_manager import BELManagerMixin
@@ -147,3 +148,22 @@ def _import_bio2bel_module(package: str):
             sys.exit(1)
 
     return b_module
+
+
+@main.command()
+@click.option('-d', '--directory', type=click.Path(file_okay=False, dir_okay=True), default=os.getcwd())
+@click.option('-o', '--output', type=click.File('w'))
+def summarize(directory: str, output):
+    """Summarize contents of training and evaluation"""
+    r = []
+    for subdirectory_name in os.listdir(directory):
+        subdirectory = os.path.join(directory, subdirectory_name)
+        if not os.path.isdir(subdirectory):
+            continue
+        with open(os.path.join(subdirectory, 'configuration.json')) as file:
+            configuration = json.load(file)
+        with open(os.path.join(subdirectory, 'evaluation_summary.json')) as file:
+            evaluation = json.load(file)
+        r.append(dict(**configuration, **evaluation))
+    df = pd.DataFrame(r)
+    df.to_csv(output, sep='\t')
