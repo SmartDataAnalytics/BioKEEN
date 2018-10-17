@@ -2,24 +2,22 @@
 
 """A command line interface for BioKEEN."""
 
-import importlib
 import json
-import os
-import sys
+from collections import OrderedDict
 
 import click
-import pandas as pd
-
 from bio2bel.constants import get_global_connection
-from bio2bel.manager.bel_manager import BELManagerMixin
-from biokeen.constants import DATA_DIR
-from pybel import from_pickle, to_pickle
 from pykeen import run
-from .build import ensure_drugbank, ensure_hippie, iterate_source_paths
-from .convert import to_keen_file
+from pykeen.cli import prompt_config, _configure_evaluation_specific_parameters, training_file_prompt, \
+    execution_mode_prompt, model_selection_prompt, execution_mode_specific_prompt, device_prompt, output_direc_prompt
+from pykeen.constants import TRAINING_SET_PATH, EXECUTION_MODE
+from pykeen.utilities.cli_utils.cli_print_msg_helper import print_section_divider, print_training_set_message
 
-CONFIG_PATH = os.path.join(DATA_DIR, "configuration.json")
-EMOJI = '🍩'
+from biokeen.cli_utils.bio_2_bel_utils import install_bio2bel_module
+from biokeen.cli_utils.cli_print_msg_helper import print_welcome_message, print_intro
+from biokeen.cli_utils.cli_query_helper import ask_for_data_source, select_database
+from biokeen.constants import CONFIG_PATH
+from .build import ensure_drugbank, ensure_hippie, iterate_source_paths
 
 connection_option = click.option(
     '-c',
@@ -30,20 +28,75 @@ connection_option = click.option(
 )
 
 
+def prompt_config():
+    """
+
+    :return:
+    """
+    config = OrderedDict()
+
+    # Step 1: Welcome + Intro
+    print_welcome_message()
+    print_section_divider()
+    print_intro()
+    print_section_divider()
+
+    # Step 2: Ask for data source
+    is_biokeen_data_required = ask_for_data_source()
+
+    if is_biokeen_data_required:
+        database_name = select_database()
+        config[TRAINING_SET_PATH] = install_bio2bel_module(name=database_name)
+    else:
+        print_training_set_message()
+        config[TRAINING_SET_PATH] = training_file_prompt(config)
+
+    print_section_divider()
+
+    # Step 3: Ask for execution mode
+    config = execution_mode_prompt(config=config)
+    print_section_divider()
+
+    # Step 4: Ask for model
+    model_name = model_selection_prompt()
+    print_section_divider()
+
+    # Step 5: Query parameters depending on the selected execution mode
+    config = execution_mode_specific_prompt(config=config, model_name=model_name)
+    print_section_divider()
+
+    config.update(_configure_evaluation_specific_parameters(config[EXECUTION_MODE]))
+
+    print_section_divider()
+
+    # Step 7: Query device to train on
+    config = device_prompt(config=config)
+    print_section_divider()
+
+    # Step 8: Define output directory
+    config = output_direc_prompt(config=config)
+    print_section_divider()
+
+    return config
+
+
 @click.group()
+# @click.command()
+# @click.option('-c', '--config', type=click.File(), help='A BioKEEN JSON configuration file')
 def main():  # noqa: D401
     """A command line interface for BioKEEN."""
+
 
 
 @main.command()
 @click.option('-c', '--config', type=click.File(), default=CONFIG_PATH, show_default=True)
 @click.option('-o', '--output-directory', help='Output directory', type=click.Path(file_okay=False, dir_okay=True))
 @click.option('-p', '--training-path', help='Data path', type=click.Path(file_okay=True, dir_okay=False))
-def keen(config, output_directory, training_path):
-    """Run KEEN."""
+def pykeen(config, output_directory, training_path):
+    """Run PyKEEN."""
     config = json.load(config)
 
-    run(
+    start(
         config,
         output_directory=output_directory,
         training_path=training_path,
@@ -55,6 +108,15 @@ def ls():
     """List built data."""
     for path in iterate_source_paths():
         click.echo(path)
+
+@main.command()
+def start():
+    """Start BioKEEN pipeline."""
+
+    config = prompt_config()
+
+    start(config)
+
 
 
 @main.group()
@@ -92,78 +154,4 @@ def drugbank(connection):
 @click.option('-r', '--rebuild', is_flag=True)
 def get(name, connection, rebuild):
     """Install, populate, and build Bio2BEL repository."""
-    bio2bel_module_name = f"bio2bel_{name}"
-    keen_df_path = os.path.join(DATA_DIR, f'{name}.keen.tsv')
-    pickle_path = os.path.join(DATA_DIR, f'{name}.bel.pickle')
-
-    if os.path.exists(keen_df_path) and not rebuild:
-        click.secho(f'{EMOJI} {bio2bel_module_name} has already been retrieved. See: {keen_df_path}', bold=True)
-        sys.exit(0)
-
-    if os.path.exists(pickle_path):
-        click.secho(f'{EMOJI} loaded {bio2bel_module_name} pickle: {pickle_path}', bold=True)
-        graph = from_pickle(pickle_path)
-        to_keen_file(graph, keen_df_path)
-        sys.exit(0)
-
-    bio2bel_module = _import_bio2bel_module(bio2bel_module_name)
-    click.secho(f'{EMOJI} imported {bio2bel_module_name}', bold=True)
-
-    if not issubclass(bio2bel_module.Manager, BELManagerMixin):
-        click.secho(f'{EMOJI} {bio2bel_module_name} does not produce BEL', bold=True, fg='red')
-        sys.exit(1)
-
-    manager = bio2bel_module.Manager(connection=connection)
-
-    if not manager.is_populated():
-        click.secho(f'{EMOJI} populating {bio2bel_module_name}', bold=True)
-        manager.populate()
-    else:
-        click.secho(f'{EMOJI} {bio2bel_module_name} has already been populated', bold=True)
-
-    click.secho(f'{EMOJI} generating BEL for {bio2bel_module_name}', bold=True)
-    graph = manager.to_bel()
-    click.echo(f'Summary: {graph.number_of_nodes()} nodes / {graph.number_of_edges()} edges')
-    to_pickle(graph, pickle_path)
-    click.secho(f'{EMOJI} generating KEEN for {bio2bel_module_name}', bold=True)
-    to_keen_file(graph, keen_df_path)
-
-
-def _import_bio2bel_module(package: str):
-    """Import a package, or install it."""
-    try:
-        b_module = importlib.import_module(package)
-
-    except ImportError:
-        click.secho(f'{EMOJI} pip install {package}', bold=True)
-        # Install this package using pip
-        # https://stackoverflow.com/questions/12332975/installing-python-module-within-code
-        from pip._internal import main as pip_main
-        pip_main(['install', package])
-
-        try:
-            return importlib.import_module(package)
-        except ImportError:
-            click.secho(f'{EMOJI} failed to import {package}', bold=True)
-            sys.exit(1)
-
-    return b_module
-
-
-@main.command()
-@click.option('-d', '--directory', type=click.Path(file_okay=False, dir_okay=True), default=os.getcwd())
-@click.option('-o', '--output', type=click.File('w'))
-def summarize(directory: str, output):
-    """Summarize contents of training and evaluation"""
-    r = []
-    for subdirectory_name in os.listdir(directory):
-        subdirectory = os.path.join(directory, subdirectory_name)
-        if not os.path.isdir(subdirectory):
-            continue
-        with open(os.path.join(subdirectory, 'configuration.json')) as file:
-            configuration = json.load(file)
-        with open(os.path.join(subdirectory, 'evaluation_summary.json')) as file:
-            evaluation = json.load(file)
-        r.append(dict(**configuration, **evaluation))
-    df = pd.DataFrame(r)
-    df.to_csv(output, sep='\t')
+    install_bio2bel_module(name, connection, rebuild)
