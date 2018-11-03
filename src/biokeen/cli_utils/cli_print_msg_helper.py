@@ -16,7 +16,7 @@ def print_intro():
     click.secho("")
     click.secho(
         "BioKEEN can be run in two modes: \n"
-        "1.) Training mode: PyKEEN trains a model based on a set of user-defined hyper-parameters.\n"
+        "1.) Training mode: BioKEEN trains a model based on a set of user-defined hyper-parameters.\n"
         "2.) Hyper-parameter optimization mode: "
         "Apply Random Search to determine the most appropriate set of hyper-parameter values"
     )

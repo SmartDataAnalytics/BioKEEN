@@ -3,20 +3,22 @@
 """A command line interface for BioKEEN."""
 
 import json
+import os
 from collections import OrderedDict
 
 import click
+import pykeen
 from bio2bel.constants import get_global_connection
-from pykeen import run
 from pykeen.cli import prompt_config, _configure_evaluation_specific_parameters, training_file_prompt, \
     execution_mode_prompt, model_selection_prompt, execution_mode_specific_prompt, device_prompt, output_direc_prompt
 from pykeen.constants import TRAINING_SET_PATH, EXECUTION_MODE
+from pykeen.predict import start_predictions_piepline
 from pykeen.utilities.cli_utils.cli_print_msg_helper import print_section_divider, print_training_set_message
 
 from biokeen.cli_utils.bio_2_bel_utils import install_bio2bel_module
 from biokeen.cli_utils.cli_print_msg_helper import print_welcome_message, print_intro
 from biokeen.cli_utils.cli_query_helper import ask_for_data_source, select_database
-from biokeen.constants import CONFIG_PATH
+
 from .build import ensure_drugbank, ensure_hippie, iterate_source_paths
 
 connection_option = click.option(
@@ -28,7 +30,7 @@ connection_option = click.option(
 )
 
 
-def prompt_config():
+def prompt_config(connection, rebuild):
     """
 
     :return:
@@ -43,10 +45,11 @@ def prompt_config():
 
     # Step 2: Ask for data source
     is_biokeen_data_required = ask_for_data_source()
+    print_section_divider()
 
     if is_biokeen_data_required:
         database_name = select_database()
-        config[TRAINING_SET_PATH] = install_bio2bel_module(name=database_name)
+        config[TRAINING_SET_PATH] = install_bio2bel_module(name=database_name,connection=connection,rebuild=rebuild)
     else:
         print_training_set_message()
         config[TRAINING_SET_PATH] = training_file_prompt(config)
@@ -87,20 +90,19 @@ def main():  # noqa: D401
     """A command line interface for BioKEEN."""
 
 
-
-@main.command()
-@click.option('-c', '--config', type=click.File(), default=CONFIG_PATH, show_default=True)
-@click.option('-o', '--output-directory', help='Output directory', type=click.Path(file_okay=False, dir_okay=True))
-@click.option('-p', '--training-path', help='Data path', type=click.Path(file_okay=True, dir_okay=False))
-def pykeen(config, output_directory, training_path):
-    """Run PyKEEN."""
-    config = json.load(config)
-
-    start(
-        config,
-        output_directory=output_directory,
-        training_path=training_path,
-    )
+# @main.command()
+# @click.option('-c', '--config', type=click.File(), default=CONFIG_PATH, show_default=True)
+# @click.option('-o', '--output-directory', help='Output directory', type=click.Path(file_okay=False, dir_okay=True))
+# @click.option('-p', '--training-path', help='Data path', type=click.Path(file_okay=True, dir_okay=False))
+# def pykeen(config, output_directory, training_path):
+#     """Run PyKEEN."""
+#     config = json.load(config)
+#
+#     start(
+#         config,
+#         output_directory=output_directory,
+#         training_path=training_path,
+#     )
 
 
 @main.command()
@@ -109,14 +111,27 @@ def ls():
     for path in iterate_source_paths():
         click.echo(path)
 
+
 @main.command()
-def start():
+@click.option('-c', '--config', type=click.File())
+@connection_option
+@click.option('-r', '--rebuild', is_flag=True)
+def start(config,connection, rebuild):
     """Start BioKEEN pipeline."""
 
-    config = prompt_config()
+    if config is None:
+        config = prompt_config(connection, rebuild)
 
-    start(config)
+    pykeen.cli.run(config)
 
+
+@main.command()
+@click.option('-m', '--model_direc', type=click.Path(file_okay=False, dir_okay=True))
+@click.option('-d', '--data_direc', type=click.Path(file_okay=False, dir_okay=True))
+def predict(model_direc: str, data_direc: str):
+    """Use a trained model to make predictions."""
+
+    start_predictions_piepline(model_direc, data_direc)
 
 
 @main.group()

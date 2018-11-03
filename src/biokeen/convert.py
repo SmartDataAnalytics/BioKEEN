@@ -17,7 +17,7 @@ from pybel.constants import (
 from pybel.dsl import BaseEntity, MicroRna, Rna
 
 __all__ = [
-    'to_keen_file',
+    'to_pykeen_file',
     'to_keen_df',
     'get_triple',
 ]
@@ -25,7 +25,7 @@ __all__ = [
 logger = logging.getLogger(__name__)
 
 
-def to_keen_file(graph: BELGraph, file: Union[str, Path, TextIO]) -> None:
+def to_pykeen_file(graph: BELGraph, file: Union[str, Path, TextIO]) -> None:
     """Write the relationships in the BEL graph to a KEEN TSV file."""
     df = to_keen_df(graph)
     df.to_csv(file, sep='\t', index=None, header=None)
