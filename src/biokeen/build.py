@@ -10,7 +10,7 @@ import numpy as np
 
 from pybel import from_pickle, to_pickle
 from .constants import DATA_DIR
-from .convert import to_keen_file
+from .convert import to_pykeen_file
 
 __all__ = [
     'iterate_source_paths',
@@ -59,7 +59,7 @@ def ensure_hippie(connection: Optional[str] = None):
         to_pickle(hippie_graph, hippie_bel_path)
 
     logger.info('outputting')
-    to_keen_file(hippie_graph, hippie_keen_path)
+    to_pykeen_file(hippie_graph, hippie_keen_path)
 
 
 def ensure_drugbank(connection: Optional[str] = None):
@@ -75,4 +75,4 @@ def ensure_drugbank(connection: Optional[str] = None):
         drugbank_graph = drugbank_manager.to_bel()
         to_pickle(drugbank_graph, drugbank_bel_path)
 
-    to_keen_file(drugbank_graph, drugbank_keen_path)
+    to_pykeen_file(drugbank_graph, drugbank_keen_path)
