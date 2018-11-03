@@ -26,7 +26,7 @@ Installation
 
 How to Use
 ----------
-To start BioKEEN, please run the following command:
+To show BioKEEN's available commands, please run following command:
 
 .. code-block:: sh
 
@@ -38,7 +38,50 @@ or alternatively:
 
     python3 -m biokeen
 
-then the command line interface will assist you to configure your experiments.
+
+Starting BioKEEN'S training/HPO pipeline
+****************************************
+To configure an experiment please run following command:
+
+.. code-block:: sh
+
+    biokeen start
+
+or alternatively:
+
+.. code-block:: python
+
+    python3 -m biokeen start
+
+
+To start BioKEEN with an existing configuration file, please run the following command:
+
+.. code-block:: sh
+
+    biokeen start -c /path/to/config.json
+
+or alternatively:
+
+.. code-block:: python
+
+    python3 -m biokeen start -c /path/to/config.json
+
+
+
+Starting BioKEEN'S prediction pipeline
+**************************************
+To make prediction based on a trained model please run following command:
+
+.. code-block:: sh
+
+    biokeen predict -m /path/to/model/directory -d /path/to/data/directory
+
+or alternatively:
+
+.. code-block:: python
+
+    python3 -m biokeen start -m /path/to/model/directory -d /path/to/data/directory
+
 
 Getting Bio2BEL Data
 ********************
