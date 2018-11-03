@@ -39,7 +39,7 @@ or alternatively:
     python3 -m biokeen
 
 
-Starting BioKEEN'S training/HPO pipeline
+Starting BioKEEN's training/HPO pipeline
 ****************************************
 To configure an experiment, please run following command:
 
@@ -68,7 +68,7 @@ or alternatively:
 
 
 
-Starting BioKEEN'S prediction pipeline
+Starting BioKEEN's prediction pipeline
 **************************************
 To make prediction based on a trained model, please run following command:
 
