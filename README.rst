@@ -80,7 +80,7 @@ or alternatively:
 
 .. code-block:: python
 
-    python3 -m biokeen start -m /path/to/model/directory -d /path/to/data/directory
+    python3 -m biokeen predict -m /path/to/model/directory -d /path/to/data/directory
 
 
 Getting Bio2BEL Data
