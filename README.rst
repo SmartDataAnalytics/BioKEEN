@@ -41,7 +41,7 @@ or alternatively:
 
 Starting BioKEEN'S training/HPO pipeline
 ****************************************
-To configure an experiment please run following command:
+To configure an experiment, please run following command:
 
 .. code-block:: sh
 
@@ -70,7 +70,7 @@ or alternatively:
 
 Starting BioKEEN'S prediction pipeline
 **************************************
-To make prediction based on a trained model please run following command:
+To make prediction based on a trained model, please run following command:
 
 .. code-block:: sh
 
