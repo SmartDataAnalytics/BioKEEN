@@ -1,6 +1,6 @@
 BioKEEN |build|
 ===============
-BioKEEN is a package for training and evaluating biological knowledge graph embeddings built on
+BioKEEN (Biological KnowlEdge EmbeddiNgs) is a package for training and evaluating biological knowledge graph embeddings built on
 `PyKEEN <https://github.com/SmartDataAnalytics/PyKEEN>`_.
 
 **Currently, the framework is under heavy development.**
