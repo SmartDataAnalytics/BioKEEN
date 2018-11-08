@@ -1,5 +1,8 @@
 BioKEEN |build|
 ===============
+.. image:: https://zenodo.org/badge/150270965.svg
+   :target: https://zenodo.org/badge/latestdoi/150270965
+   
 BioKEEN (Biological KnowlEdge EmbeddiNgs) is a package for training and evaluating biological knowledge graph embeddings built on
 `PyKEEN <https://github.com/SmartDataAnalytics/PyKEEN>`_.
 
