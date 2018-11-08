@@ -9,7 +9,7 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 DATA_DIR_ENVVAR = 'KEEN_DATA'
 DATA_DIR = os.environ.get(DATA_DIR_ENVVAR) or os.path.abspath(os.path.join(HERE, os.pardir, os.pardir, 'data'))
 
-VERSION = 'VERSION = '0.0.3-dev''
+VERSION = 'VERSION = '0.0.4-dev''
 
 CONFIG_PATH = os.path.join(DATA_DIR, "configuration.json")
 EMOJI = '🍩'
