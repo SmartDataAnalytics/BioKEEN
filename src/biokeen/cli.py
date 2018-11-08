@@ -2,24 +2,26 @@
 
 """A command line interface for BioKEEN."""
 
-import json
-import os
 from collections import OrderedDict
 
 import click
+
 import pykeen
 from bio2bel.constants import get_global_connection
-from pykeen.cli import prompt_config, _configure_evaluation_specific_parameters, training_file_prompt, \
-    execution_mode_prompt, model_selection_prompt, execution_mode_specific_prompt, device_prompt, output_direc_prompt
-from pykeen.constants import TRAINING_SET_PATH, EXECUTION_MODE
-from pykeen.predict import start_predictions_piepline
-from pykeen.utilities.cli_utils.cli_print_msg_helper import print_section_divider, print_training_set_message
-
+from biokeen.build import ensure_drugbank, ensure_hippie, iterate_source_paths
 from biokeen.cli_utils.bio_2_bel_utils import install_bio2bel_module
-from biokeen.cli_utils.cli_print_msg_helper import print_welcome_message, print_intro
-from biokeen.cli_utils.cli_query_helper import ask_for_data_source, select_database
-
-from .build import ensure_drugbank, ensure_hippie, iterate_source_paths
+from biokeen.cli_utils.cli_print_msg_helper import print_intro, print_welcome_message
+from biokeen.cli_utils.cli_query_helper import select_database
+from pykeen.cli import (
+    _configure_evaluation_specific_parameters, device_prompt, execution_mode_specific_prompt, model_selection_prompt,
+    output_direc_prompt, prompt_config, training_file_prompt,
+)
+from pykeen.constants import EXECUTION_MODE, HPO_MODE, TRAINING_MODE, TRAINING_SET_PATH
+from pykeen.predict import start_predictions_piepline
+from pykeen.utilities.cli_utils.cli_print_msg_helper import (
+    print_execution_mode_message, print_intro,
+    print_section_divider, print_training_set_message, print_welcome_message,
+)
 
 connection_option = click.option(
     '-c',
@@ -44,12 +46,13 @@ def prompt_config(connection, rebuild):
     print_section_divider()
 
     # Step 2: Ask for data source
-    is_biokeen_data_required = ask_for_data_source()
+    is_biokeen_data_required = click.confirm('Do you want to use one of the databases provided by BioKEEN?',
+                                             default=True)
     print_section_divider()
 
     if is_biokeen_data_required:
         database_name = select_database()
-        config[TRAINING_SET_PATH] = install_bio2bel_module(name=database_name,connection=connection,rebuild=rebuild)
+        config[TRAINING_SET_PATH] = install_bio2bel_module(name=database_name, connection=connection, rebuild=rebuild)
     else:
         print_training_set_message()
         config[TRAINING_SET_PATH] = training_file_prompt(config)
@@ -57,7 +60,12 @@ def prompt_config(connection, rebuild):
     print_section_divider()
 
     # Step 3: Ask for execution mode
-    config = execution_mode_prompt(config=config)
+    print_execution_mode_message()
+    config[EXECUTION_MODE] = (
+        TRAINING_MODE
+        if click.confirm('Do you have hyper-parameters? If not, will begin hyper-parameter search.', default=False) else
+        HPO_MODE
+    )
     print_section_divider()
 
     # Step 4: Ask for model
@@ -104,25 +112,16 @@ def main():  # noqa: D401
 #         training_path=training_path,
 #     )
 
-
-@main.command()
-def ls():
-    """List built data."""
-    for path in iterate_source_paths():
-        click.echo(path)
-
-
 @main.command()
 @click.option('-c', '--config', type=click.File())
 @connection_option
 @click.option('-r', '--rebuild', is_flag=True)
-def start(config,connection, rebuild):
+def start(config, connection, rebuild):
     """Start BioKEEN pipeline."""
-
     if config is None:
         config = prompt_config(connection, rebuild)
 
-    pykeen.cli.run(config)
+    pykeen.run(config)
 
 
 @main.command()
@@ -130,13 +129,33 @@ def start(config,connection, rebuild):
 @click.option('-d', '--data_direc', type=click.Path(file_okay=False, dir_okay=True))
 def predict(model_direc: str, data_direc: str):
     """Use a trained model to make predictions."""
-
     start_predictions_piepline(model_direc, data_direc)
 
 
 @main.group()
+def data():
+    """Commands for data acquisition."""
+
+
+@data.command()
+def ls():
+    """List built data."""
+    for path in iterate_source_paths():
+        click.echo(path)
+
+
+@data.command()
+@click.argument("name")
+@connection_option
+@click.option('-r', '--rebuild', is_flag=True)
+def get(name, connection, rebuild):
+    """Install, populate, and build Bio2BEL repository."""
+    install_bio2bel_module(name, connection, rebuild)
+
+
+@data.group()
 def build():
-    """Build Bio2BEL resources."""
+    """Build suggested Bio2BEL resources."""
 
 
 @build.command()
@@ -161,12 +180,3 @@ def hippie(connection):
 def drugbank(connection):
     """Build DrugBank."""
     ensure_drugbank(connection)
-
-
-@main.command()
-@click.argument("name")
-@connection_option
-@click.option('-r', '--rebuild', is_flag=True)
-def get(name, connection, rebuild):
-    """Install, populate, and build Bio2BEL repository."""
-    install_bio2bel_module(name, connection, rebuild)

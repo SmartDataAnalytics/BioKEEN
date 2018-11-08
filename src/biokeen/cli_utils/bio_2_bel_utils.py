@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
 """Utilities for BioKEEN."""
+
 import importlib
 import os
 import sys
 
 import click
+
 from bio2bel.manager.bel_manager import BELManagerMixin
 from biokeen.constants import DATA_DIR, EMOJI
 from biokeen.convert import to_pykeen_file
 from pybel import from_pickle, to_pickle
-
 
 
 def _import_bio2bel_module(package: str):
