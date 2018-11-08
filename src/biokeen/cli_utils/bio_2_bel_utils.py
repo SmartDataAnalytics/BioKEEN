@@ -42,14 +42,12 @@ def install_bio2bel_module(name, connection, rebuild):
     if os.path.exists(pykeen_df_path) and not rebuild:
         click.secho(f'{EMOJI} {bio2bel_module_name} has already been retrieved. See: {pykeen_df_path}', bold=True)
         return pykeen_df_path
-        sys.exit(0)
 
     if os.path.exists(pickle_path):
         click.secho(f'{EMOJI} loaded {bio2bel_module_name} pickle: {pickle_path}', bold=True)
         graph = from_pickle(pickle_path)
         to_pykeen_file(graph, pykeen_df_path)
         return pykeen_df_path
-        sys.exit(0)
 
     bio2bel_module = _import_bio2bel_module(bio2bel_module_name)
     click.secho(f'{EMOJI} imported {bio2bel_module_name}', bold=True)
