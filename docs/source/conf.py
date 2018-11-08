@@ -25,7 +25,7 @@ copyright = '2018, Mehdi Ali, Charles Tapley Hoyt, and Daniel Domingo-Fernández
 author = 'Mehdi Ali, Charles Tapley Hoyt, and Daniel Domingo-Fernández'
 
 # The full version, including alpha/beta/rc tags.
-release = '0.0.3-dev'
+release = '0.0.3'
 
 
 # The short X.Y version.
