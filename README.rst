@@ -1,15 +1,11 @@
-BioKEEN |build|
-===============
-.. image:: https://zenodo.org/badge/150270965.svg
-   :target: https://zenodo.org/badge/latestdoi/150270965
+BioKEEN |build||zendo|
+======================
+
    
 BioKEEN (Biological KnowlEdge EmbeddiNgs) is a package for training and evaluating biological knowledge graph embeddings built on
 `PyKEEN <https://github.com/SmartDataAnalytics/PyKEEN>`_.
 
 **Currently, the framework is under heavy development.**
-
-.. |build| image:: https://travis-ci.org/SmartDataAnalytics/BioKEEN.svg?branch=master
-    :target: https://travis-ci.org/SmartDataAnalytics/BioKEEN
 
 Installation
 ------------
@@ -97,3 +93,9 @@ repository, run:
     
 Where ``<name>`` can be any repository name in Bio2BEL like ``hippie``, ``mirtarbase``
 and others.
+
+.. |build| image:: https://travis-ci.org/SmartDataAnalytics/BioKEEN.svg?branch=master
+    :target: https://travis-ci.org/SmartDataAnalytics/BioKEEN
+    
+.. image:: https://zenodo.org/badge/150270965.svg
+   :target: https://zenodo.org/badge/latestdoi/150270965
