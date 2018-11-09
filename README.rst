@@ -1,4 +1,4 @@
-BioKEEN |build||zendo|
+BioKEEN |build||zenodo|
 ======================
 
    
