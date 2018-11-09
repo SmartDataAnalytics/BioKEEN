@@ -1,5 +1,5 @@
-BioKEEN |build||zenodo|
-=======================
+BioKEEN |build| |zenodo|
+========================
 
    
 BioKEEN (Biological KnowlEdge EmbeddiNgs) is a package for training and evaluating biological knowledge graph embeddings built on
@@ -97,5 +97,5 @@ and others.
 .. |build| image:: https://travis-ci.org/SmartDataAnalytics/BioKEEN.svg?branch=master
     :target: https://travis-ci.org/SmartDataAnalytics/BioKEEN
     
-.. image:: https://zenodo.org/badge/150270965.svg
+.. |zenodo| image:: https://zenodo.org/badge/150270965.svg
    :target: https://zenodo.org/badge/latestdoi/150270965
