@@ -69,7 +69,7 @@ def install_bio2bel_module(name, connection, rebuild):
     graph = manager.to_bel()
     click.echo(f'Summary: {graph.number_of_nodes()} nodes / {graph.number_of_edges()} edges')
     to_pickle(graph, pickle_path)
-    click.secho(f'{EMOJI} generating KEEN for {bio2bel_module_name}', bold=True)
+    click.secho(f'{EMOJI} generating PyKEEN TSV for {bio2bel_module_name}', bold=True)
     to_pykeen_file(graph, pykeen_df_path)
 
     return pykeen_df_path

@@ -2,6 +2,7 @@
 
 """A command line interface for BioKEEN."""
 
+import logging
 from collections import OrderedDict
 
 import click
@@ -148,8 +149,11 @@ def ls():
 @click.argument("name")
 @connection_option
 @click.option('-r', '--rebuild', is_flag=True)
-def get(name, connection, rebuild):
+@click.option('-v', '--verbose', is_flag=True)
+def get(name, connection, rebuild, verbose):
     """Install, populate, and build Bio2BEL repository."""
+    if verbose:
+        logging.basicConfig(level=logging.INFO)
     install_bio2bel_module(name, connection, rebuild)
 
 
