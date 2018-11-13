@@ -6,23 +6,28 @@ import logging
 from collections import OrderedDict
 
 import click
-
 import pykeen
 from bio2bel.constants import get_global_connection
-from biokeen.build import ensure_drugbank, ensure_hippie, iterate_source_paths
-from biokeen.cli_utils.bio_2_bel_utils import install_bio2bel_module
-from biokeen.cli_utils.cli_print_msg_helper import print_intro, print_welcome_message
-from biokeen.cli_utils.cli_query_helper import select_database
 from pykeen.cli import (
-    _configure_evaluation_specific_parameters, device_prompt, execution_mode_specific_prompt, model_selection_prompt,
-    output_direc_prompt, prompt_config, training_file_prompt,
+    _configure_evaluation_specific_parameters,
+    device_prompt,
+    execution_mode_specific_prompt,
+    model_selection_prompt,
+    output_direc_prompt,
+    training_file_prompt,
 )
 from pykeen.constants import EXECUTION_MODE, HPO_MODE, TRAINING_MODE, TRAINING_SET_PATH
 from pykeen.predict import start_predictions_piepline
 from pykeen.utilities.cli_utils.cli_print_msg_helper import (
-    print_execution_mode_message, print_intro,
-    print_section_divider, print_training_set_message, print_welcome_message,
+    print_execution_mode_message,
+    print_section_divider,
+    print_training_set_message
 )
+
+from biokeen.build import ensure_drugbank, ensure_hippie, iterate_source_paths
+from biokeen.cli_utils.bio_2_bel_utils import install_bio2bel_module
+from biokeen.cli_utils.cli_print_msg_helper import print_intro, print_welcome_message
+from biokeen.cli_utils.cli_query_helper import select_database
 
 connection_option = click.option(
     '-c',
@@ -93,25 +98,9 @@ def prompt_config(connection, rebuild):
 
 
 @click.group()
-# @click.command()
-# @click.option('-c', '--config', type=click.File(), help='A BioKEEN JSON configuration file')
 def main():  # noqa: D401
     """A command line interface for BioKEEN."""
 
-
-# @main.command()
-# @click.option('-c', '--config', type=click.File(), default=CONFIG_PATH, show_default=True)
-# @click.option('-o', '--output-directory', help='Output directory', type=click.Path(file_okay=False, dir_okay=True))
-# @click.option('-p', '--training-path', help='Data path', type=click.Path(file_okay=True, dir_okay=False))
-# def pykeen(config, output_directory, training_path):
-#     """Run PyKEEN."""
-#     config = json.load(config)
-#
-#     start(
-#         config,
-#         output_directory=output_directory,
-#         training_path=training_path,
-#     )
 
 @main.command()
 @click.option('-c', '--config', type=click.File())
