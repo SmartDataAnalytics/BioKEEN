@@ -6,8 +6,15 @@ import logging
 from collections import OrderedDict
 
 import click
-import pykeen
+
 from bio2bel.constants import get_global_connection
+
+from biokeen.build import ensure_drugbank, ensure_hippie, iterate_source_paths
+from biokeen.cli_utils.bio_2_bel_utils import install_bio2bel_module
+from biokeen.cli_utils.cli_print_msg_helper import print_intro, print_welcome_message
+from biokeen.cli_utils.cli_query_helper import select_database
+
+import pykeen
 from pykeen.cli import (
     _configure_evaluation_specific_parameters,
     device_prompt,
@@ -24,10 +31,7 @@ from pykeen.utilities.cli_utils.cli_print_msg_helper import (
     print_training_set_message
 )
 
-from biokeen.build import ensure_drugbank, ensure_hippie, iterate_source_paths
-from biokeen.cli_utils.bio_2_bel_utils import install_bio2bel_module
-from biokeen.cli_utils.cli_print_msg_helper import print_intro, print_welcome_message
-from biokeen.cli_utils.cli_query_helper import select_database
+
 
 connection_option = click.option(
     '-c',
@@ -39,10 +43,7 @@ connection_option = click.option(
 
 
 def prompt_config(connection, rebuild):
-    """
-
-    :return:
-    """
+    """Configure experiments."""
     config = OrderedDict()
 
     # Step 1: Welcome + Intro

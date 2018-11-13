@@ -36,6 +36,7 @@ def _import_bio2bel_module(package: str):
 
 
 def install_bio2bel_module(name, connection, rebuild):
+    """Install Bio2BEL module."""
     bio2bel_module_name = f"bio2bel_{name}"
     pykeen_df_path = os.path.join(DATA_DIR, f'{name}.keen.tsv')
     pickle_path = os.path.join(DATA_DIR, f'{name}.bel.pickle')
