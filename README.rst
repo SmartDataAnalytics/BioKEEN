@@ -1,11 +1,11 @@
-BioKEEN |build| |zenodo|
+BioKEEN |build| |docs| |zenodo|
 ========================
 
 BioKEEN (Biological KnowlEdge EmbeddiNgs) is a package for training and evaluating biological knowledge graph embeddings built on
 `PyKEEN <https://github.com/SmartDataAnalytics/PyKEEN>`_.
 
-Installation
-------------
+Installation |pypi_version| |python_versions| |pypi_license|
+------------------------------------------------------------
 1. ``BioKEEN`` can be installed with the following commands:
 
 .. code-block:: sh
@@ -92,3 +92,13 @@ Where ``<name>`` can be any repository name in Bio2BEL such as ``hippie``, ``mir
     :target: https://travis-ci.org/SmartDataAnalytics/BioKEEN
 .. |zenodo| image:: https://zenodo.org/badge/150270965.svg
    :target: https://zenodo.org/badge/latestdoi/150270965
+.. |docs| image:: http://readthedocs.org/projects/biokeen/badge/?version=latest
+    :target: https://biokeen.readthedocs.io/en/latest/
+    :alt: Documentation Status
+.. |python_versions| image:: https://img.shields.io/pypi/pyversions/biokeen.svg
+    :alt: Stable Supported Python Versions
+.. |pypi_version| image:: https://img.shields.io/pypi/v/biokeen.svg
+    :alt: Current version on PyPI
+.. |pypi_license| image:: https://img.shields.io/pypi/l/biokeen.svg
+    :alt: MIT License
+
