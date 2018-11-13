@@ -85,11 +85,10 @@ To download and structure the data from a `Bio2BEL <https://github.com/bio2bel>`
 .. code-block:: python
 
     biokeen get <name>
-    
+
 Where ``<name>`` can be any repository name in Bio2BEL such as ``hippie``, ``mirtarbase``.
 
 .. |build| image:: https://travis-ci.org/SmartDataAnalytics/BioKEEN.svg?branch=master
     :target: https://travis-ci.org/SmartDataAnalytics/BioKEEN
-    
 .. |zenodo| image:: https://zenodo.org/badge/150270965.svg
    :target: https://zenodo.org/badge/latestdoi/150270965
