@@ -3,10 +3,9 @@
 """Constants for BioKEEN."""
 
 import os
-from collections import OrderedDict
 
 HERE = os.path.abspath(os.path.dirname(__file__))
-DATA_DIR_ENVVAR = 'KEEN_DATA'
+DATA_DIR_ENVVAR = 'BioKEEN_DATA'
 DATA_DIR = os.environ.get(DATA_DIR_ENVVAR) or os.path.abspath(os.path.join(HERE, os.pardir, os.pardir, 'data'))
 os.makedirs(DATA_DIR, exist_ok=True)
 
