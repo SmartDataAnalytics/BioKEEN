@@ -29,6 +29,9 @@ by using the `Bio2BEL <https://github.com/bio2bel>`_ universe.
     :target: https://zenodo.org/badge/latestdoi/105248163
     :alt: KEGG Zenodo DOI
 
+.. |compath_zenodo| image:: https://zenodo.org/badge/132792765.svg
+   :target: https://zenodo.org/badge/latestdoi/132792765
+
 .. |reactome_zenodo| image:: https://zenodo.org/badge/103138323.svg
     :target: https://zenodo.org/badge/latestdoi/103138323
     :alt: Reactome Zenodo DOI
