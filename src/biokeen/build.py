@@ -16,6 +16,7 @@ __all__ = [
     'iterate_source_paths',
     'ensure_hippie',
     'ensure_drugbank',
+    'ensure_compath',
 ]
 
 logger = logging.getLogger(__name__)
@@ -25,6 +26,9 @@ hippie_keen_path = os.path.join(DATA_DIR, 'hippie.keen.tsv')
 
 drugbank_bel_path = os.path.join(DATA_DIR, 'drugbank.bel.pickle')
 drugbank_keen_path = os.path.join(DATA_DIR, 'drugbank.keen.tsv')
+
+compath_bel_path = os.path.join(DATA_DIR, 'compath.bel.pickle')
+compath_keen_path = os.path.join(DATA_DIR, 'compath.keen.tsv')
 
 
 def get_full_matrix():
@@ -76,3 +80,11 @@ def ensure_drugbank(connection: Optional[str] = None):
         to_pickle(drugbank_graph, drugbank_bel_path)
 
     to_pykeen_file(drugbank_graph, drugbank_keen_path)
+
+
+def ensure_compath():
+    """Ensure the ComPath mappings are retrieved."""
+    import compath_resources
+    graph = compath_resources.get_bel()
+    to_pickle(graph, compath_bel_path)
+    to_pykeen_file(graph, compath_keen_path)
