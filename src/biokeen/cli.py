@@ -126,15 +126,16 @@ def ls():
 
 
 @data.command()
-@click.argument("name")
+@click.argument('names', nargs=-1)
 @connection_option
 @click.option('-r', '--rebuild', is_flag=True)
 @click.option('-v', '--verbose', is_flag=True)
-def get(name, connection, rebuild, verbose):
+def get(names, connection, rebuild, verbose):
     """Install, populate, and build Bio2BEL repository."""
     if verbose:
         logging.basicConfig(level=logging.INFO)
-    install_bio2bel_module(name, connection, rebuild)
+    for name in names:
+        install_bio2bel_module(name, connection, rebuild)
 
 
 @data.group()
