@@ -16,18 +16,8 @@ import os
 import re
 import sys
 
-
-
 # -- Mockup PyTorch to exclude it while compiling the docs--------------------------------------------------------------
-from unittest.mock import MagicMock
-
-class Mock(MagicMock):
-   @classmethod
-   def __getattr__(cls, name):
-       return MagicMock()
-
-MOCK_MODULES = ['torch', 'pykeen', 'gobject', 'argparse', 'numpy', 'pandas']
-sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+autodoc_mock_imports = ['torch', 'numpy', 'scipy', 'torchvision', 'scikit-learn',]
 
 sys.path.insert(0, os.path.abspath('../../src'))
 
