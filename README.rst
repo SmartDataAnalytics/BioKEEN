@@ -1,11 +1,8 @@
 BioKEEN |build| |zenodo|
 ========================
 
-   
 BioKEEN (Biological KnowlEdge EmbeddiNgs) is a package for training and evaluating biological knowledge graph embeddings built on
 `PyKEEN <https://github.com/SmartDataAnalytics/PyKEEN>`_.
-
-**Currently, the framework is under heavy development.**
 
 Installation
 ------------
@@ -64,7 +61,6 @@ or alternatively:
 .. code-block:: python
 
     python3 -m biokeen start -c /path/to/config.json
-
 
 
 Starting BioKEEN's prediction pipeline
