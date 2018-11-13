@@ -80,15 +80,13 @@ or alternatively:
 
 Getting Bio2BEL Data
 ********************
-To download and structure the data from a `Bio2BEL <https://github.com/bio2bel>`_
-repository, run:
+To download and structure the data from a `Bio2BEL <https://github.com/bio2bel>`_ repository, run:
 
 .. code-block:: python
 
     biokeen get <name>
     
-Where ``<name>`` can be any repository name in Bio2BEL like ``hippie``, ``mirtarbase``
-and others.
+Where ``<name>`` can be any repository name in Bio2BEL such as ``hippie``, ``mirtarbase``.
 
 .. |build| image:: https://travis-ci.org/SmartDataAnalytics/BioKEEN.svg?branch=master
     :target: https://travis-ci.org/SmartDataAnalytics/BioKEEN
