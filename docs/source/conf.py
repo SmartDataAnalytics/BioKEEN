@@ -16,14 +16,20 @@ import os
 import re
 import sys
 
-import mock
 
-sys.path.insert(0, os.path.abspath('../../src'))
 
 # -- Mockup PyTorch to exclude it while compiling the docs--------------------------------------------------------------
-MOCK_MODULES = ['torch', 'pykeen',]
-for mod_name in MOCK_MODULES:
-    sys.modules[mod_name] = mock.Mock()
+from unittest.mock import MagicMock
+
+class Mock(MagicMock):
+   @classmethod
+   def __getattr__(cls, name):
+       return MagicMock()
+
+MOCK_MODULES = ['torch', 'pykeen', 'gobject', 'argparse', 'numpy', 'pandas']
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+
+sys.path.insert(0, os.path.abspath('../../src'))
 
 # -- Project information -----------------------------------------------------
 
