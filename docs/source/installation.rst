@@ -5,17 +5,17 @@ Easiest
 ~~~~~~~
 Download the latest stable code from `PyPI <https://pypi.python.org/pypi/biokeen>`_ with:
 
-.. code-block:: python
+.. code-block:: sh
 
-   python3 -m pip install biokeen
+   $ python3 -m pip install biokeen
 
 Get the Latest
 ~~~~~~~~~~~~~~~
 Download the most recent code from `GitHub <https://github.com/SmartDataAnalytics/BioKEEN>`_ with:
 
-.. code-block:: python
+.. code-block:: sh
 
-   python3 -m pip install git+https://github.com/SmartDataAnalytics/BioKEEN.git@develop
+   $ python3 -m pip install git+https://github.com/SmartDataAnalytics/BioKEEN.git
 
 .. |python_versions| image:: https://img.shields.io/pypi/pyversions/biokeen.svg
     :alt: Stable Supported Python Versions

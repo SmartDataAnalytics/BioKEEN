@@ -1,6 +1,5 @@
 Biological Databases
 ====================
-
 The following biological databases can be used for training and evaluating knowledge graph embeddings. This is done
 by using the `Bio2BEL <https://github.com/bio2bel>`_ universe.
 
