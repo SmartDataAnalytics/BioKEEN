@@ -2,17 +2,13 @@
 
 """A command line interface for BioKEEN."""
 
+import json
 import logging
 from collections import OrderedDict
 
 import click
-
 import pykeen
 from bio2bel.constants import get_global_connection
-from biokeen.build import ensure_compath, ensure_drugbank, ensure_hippie, iterate_source_paths
-from biokeen.cli_utils.bio_2_bel_utils import install_bio2bel_module
-from biokeen.cli_utils.cli_print_msg_helper import print_intro, print_welcome_message
-from biokeen.cli_utils.cli_query_helper import select_database
 from pykeen.cli import (
     _configure_evaluation_specific_parameters, device_prompt, execution_mode_specific_prompt, model_selection_prompt,
     output_direc_prompt, training_file_prompt,
@@ -22,6 +18,11 @@ from pykeen.predict import start_predictions_piepline
 from pykeen.utilities.cli_utils.cli_print_msg_helper import (
     print_execution_mode_message, print_section_divider, print_training_set_message,
 )
+
+from biokeen.build import ensure_compath, ensure_drugbank, ensure_hippie, iterate_source_paths
+from biokeen.cli_utils.bio_2_bel_utils import install_bio2bel_module
+from biokeen.cli_utils.cli_print_msg_helper import print_intro, print_welcome_message
+from biokeen.cli_utils.cli_query_helper import select_database
 
 connection_option = click.option(
     '-c',
@@ -94,13 +95,16 @@ def main():  # noqa: D401
 
 
 @main.command()
-@click.option('-c', '--config', type=click.File())
 @connection_option
+@click.option('-f', '--config', type=click.File())
 @click.option('-r', '--rebuild', is_flag=True)
 def start(config, connection, rebuild):
     """Start BioKEEN pipeline."""
+
     if config is None:
         config = prompt_config(connection, rebuild)
+    else:
+        config = json.load(config)
 
     pykeen.run(config)
 

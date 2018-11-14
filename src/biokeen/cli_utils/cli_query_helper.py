@@ -9,7 +9,7 @@ from biokeen.constants import ID_TO_DATABASE_MAPPING
 
 def select_database():
     """Select database."""
-    click.secho("Current Step: Please select the embedding model you want to train:", fg='blue')
+    click.secho("Current Step: Please select the database you want to train on:", fg='blue')
     for model, model_id in sorted(ID_TO_DATABASE_MAPPING.items()):
         click.echo(f'{model}: {model_id}')
 

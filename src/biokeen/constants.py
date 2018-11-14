@@ -15,23 +15,25 @@ CONFIG_PATH = os.path.join(DATA_DIR, "configuration.json")
 EMOJI = '🍩'
 
 # Available databases
-DRUGBANK_NAME = 'drugbank'
+COMPATH_NAME = 'compath'
 HIPPE_NAME = 'hippie'
-MIRTARBASE_NAME = 'mirtarbase'
-WIKIPATHWAYS_NAME = 'wikipathways'
-MSIG_NAME = 'msig'
 KEGG_NAME = 'kegg'
+MIRTARBASE_NAME = 'mirtarbase'
+MSIG_NAME = 'msig'
 REACTOME_NAME = 'reactome'
+WIKIPATHWAYS_NAME = 'wikipathways'
+DRUGBANK_NAME = 'drugbank'
 
 # ToDo: Add databases
 DATABASES = [
-    MIRTARBASE_NAME,
-    DRUGBANK_NAME,
-    WIKIPATHWAYS_NAME,
+    COMPATH_NAME,
     HIPPE_NAME,
-    MSIG_NAME,
     KEGG_NAME,
+    MIRTARBASE_NAME,
+    MSIG_NAME,
     REACTOME_NAME,
+    WIKIPATHWAYS_NAME,
+    DRUGBANK_NAME,
 ]
 
 ID_TO_DATABASE_MAPPING = dict(enumerate(DATABASES, start=1))
