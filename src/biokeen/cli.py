@@ -12,7 +12,7 @@ from bio2bel.constants import get_global_connection
 from pykeen.cli import (
     _configure_evaluation_specific_parameters, device_prompt, execution_mode_specific_prompt, model_selection_prompt,
     output_direc_prompt, training_file_prompt,
-)
+    random_seed_prompt)
 from pykeen.constants import EXECUTION_MODE, HPO_MODE, TRAINING_MODE, TRAINING_SET_PATH
 from pykeen.predict import start_predictions_piepline
 from pykeen.utilities.cli_utils.cli_print_msg_helper import (
@@ -53,7 +53,7 @@ def prompt_config(connection, rebuild):
         config[TRAINING_SET_PATH] = install_bio2bel_module(name=database_name, connection=connection, rebuild=rebuild)
     else:
         print_training_set_message()
-        config[TRAINING_SET_PATH] = training_file_prompt(config)
+        config = training_file_prompt(config)
 
     print_section_divider()
 
@@ -76,6 +76,10 @@ def prompt_config(connection, rebuild):
 
     config.update(_configure_evaluation_specific_parameters(config[EXECUTION_MODE]))
 
+    print_section_divider()
+
+    # Step 6: Please select a random seed
+    config = random_seed_prompt(config=config)
     print_section_divider()
 
     # Step 7: Query device to train on
