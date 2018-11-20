@@ -8,14 +8,17 @@ import sys
 
 import click
 
+from bio2bel import AbstractManager
 from bio2bel.manager.bel_manager import BELManagerMixin
 from biokeen.constants import DATA_DIR, EMOJI
 from biokeen.convert import to_pykeen_file
 from pybel import from_pickle, to_pickle
 
 
-def _import_bio2bel_module(package: str):
+def _import_bio2bel_module(name: str):
     """Import a package, or install it."""
+    package = f"bio2bel_{name}"
+
     try:
         b_module = importlib.import_module(package)
 
@@ -24,7 +27,11 @@ def _import_bio2bel_module(package: str):
         # Install this package using pip
         # https://stackoverflow.com/questions/12332975/installing-python-module-within-code
         from pip._internal import main as pip_main
-        pip_main(['install', package])
+        r = pip_main(['install', package])
+        if r != 0:  # command failed
+            click.secho(f'{EMOJI} could not find {package} on PyPI. Try installing from GitHub with:', bold=True)
+            click.echo(f'\n   pip install git+https://github.com/bio2bel/{name}.git\n')
+            sys.exit(1)
 
         try:
             return importlib.import_module(package)
@@ -51,20 +58,23 @@ def install_bio2bel_module(name, connection, rebuild):
         to_pykeen_file(graph, pykeen_df_path)
         return pykeen_df_path
 
-    bio2bel_module = _import_bio2bel_module(bio2bel_module_name)
+    bio2bel_module = _import_bio2bel_module(name)
     click.secho(f'{EMOJI} imported {bio2bel_module_name}', bold=True)
 
-    if not issubclass(bio2bel_module.Manager, BELManagerMixin):
+    manager_cls = bio2bel_module.Manager
+
+    if not issubclass(manager_cls, BELManagerMixin):
         click.secho(f'{EMOJI} {bio2bel_module_name} does not produce BEL', bold=True, fg='red')
         sys.exit(1)
 
-    manager = bio2bel_module.Manager(connection=connection)
+    manager = manager_cls(connection=connection)
 
-    if not manager.is_populated():
-        click.secho(f'{EMOJI} populating {bio2bel_module_name}', bold=True)
-        manager.populate()
-    else:
-        click.secho(f'{EMOJI} {bio2bel_module_name} has already been populated', bold=True)
+    if issubclass(manager_cls, AbstractManager):
+        if not manager.is_populated():
+            click.secho(f'{EMOJI} populating {bio2bel_module_name}', bold=True)
+            manager.populate()
+        else:
+            click.secho(f'{EMOJI} {bio2bel_module_name} has already been populated', bold=True)
 
     click.secho(f'{EMOJI} generating BEL for {bio2bel_module_name}', bold=True)
     graph = manager.to_bel()
