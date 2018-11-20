@@ -16,24 +16,28 @@ EMOJI = '🍩'
 
 # Available databases
 COMPATH_NAME = 'compath'
-HIPPE_NAME = 'hippie'
+HIPPIE_NAME = 'hippie'
 KEGG_NAME = 'kegg'
 MIRTARBASE_NAME = 'mirtarbase'
 MSIG_NAME = 'msig'
 REACTOME_NAME = 'reactome'
 WIKIPATHWAYS_NAME = 'wikipathways'
 DRUGBANK_NAME = 'drugbank'
+ADEPTUS_NAME = 'adeptus'
+HSDN_NAME = 'hsdn'
 
 # ToDo: Add databases
 DATABASES = [
     COMPATH_NAME,
-    HIPPE_NAME,
+    HIPPIE_NAME,
     KEGG_NAME,
     MIRTARBASE_NAME,
     MSIG_NAME,
     REACTOME_NAME,
     WIKIPATHWAYS_NAME,
     DRUGBANK_NAME,
+    ADEPTUS_NAME,
+    HSDN_NAME,
 ]
 
 ID_TO_DATABASE_MAPPING = dict(enumerate(DATABASES, start=1))
