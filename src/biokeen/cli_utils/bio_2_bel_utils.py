@@ -15,10 +15,8 @@ from biokeen.convert import to_pykeen_file
 from pybel import from_pickle, to_pickle
 
 
-def _import_bio2bel_module(name: str):
+def _import_bio2bel_module(package: str):
     """Import a package, or install it."""
-    package = f"bio2bel_{name}"
-
     try:
         b_module = importlib.import_module(package)
 
@@ -30,6 +28,7 @@ def _import_bio2bel_module(name: str):
         r = pip_main(['install', package])
         if r != 0:  # command failed
             click.secho(f'{EMOJI} could not find {package} on PyPI. Try installing from GitHub with:', bold=True)
+            name = package.split("_")[-1]
             click.echo(f'\n   pip install git+https://github.com/bio2bel/{name}.git\n')
             sys.exit(1)
 
@@ -62,7 +61,7 @@ def install_bio2bel_module(name, connection, rebuild):
         to_pykeen_file(graph, pykeen_df_path)
         return pykeen_df_path
 
-    bio2bel_module = _import_bio2bel_module(name)
+    bio2bel_module = _import_bio2bel_module(module_name)
     click.secho(f'{EMOJI} imported {module_name}', bold=True)
 
     manager_cls = bio2bel_module.Manager
