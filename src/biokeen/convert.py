@@ -54,21 +54,21 @@ def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Tuple
     if relation in HAS_COMPONENT:
         return (
             f'{v.namespace}:{v.identifier or v.name}',
-            'part of',
+            'partOf',
             str(u),
         )
 
     elif relation == PART_OF:
         return (
             f'{u.namespace}:{u.identifier or u.name}',
-            'part of',
+            'partOf',
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
     elif relation == REGULATES and object_modifier and object_modifier.get(MODIFIER) == ACTIVITY:
         return (
             f'{u.namespace}:{u.identifier or u.name}',
-            'activity directly negatively regulates activity of',
+            'activityDirectlyNegativelyRegulatesActivityOf',
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
@@ -76,35 +76,35 @@ def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Tuple
         # this is a mircoRNA regulation
         return (
             f'{u.namespace}:{u.identifier or u.name}',
-            'represses expression of',
+            'repressesExpressionOf',
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
     elif relation == TRANSLATED_TO:
         return (
             f'{u.namespace}:{u.identifier or u.name}',
-            'ribosomally translates to',
+            'ribosomallyTranslatesTo',
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
     elif relation == TRANSCRIBED_TO:
         return (
             f'{u.namespace}:{u.identifier or u.name}',
-            'transcribed to',
+            'transcribedTo',
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
     elif relation == IS_A:
         return (
             f'{u.namespace}:{u.identifier or u.name}',
-            'is a',
+            'isA',
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
     elif relation == EQUIVALENT_TO:
         return (
             f'{u.namespace}:{u.identifier or u.name}',
-            'equivalent to',
+            'equivalentTo',
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
