@@ -4,14 +4,30 @@
 
 import os
 
+import easy_config
+
 HERE = os.path.abspath(os.path.dirname(__file__))
-DATA_DIR_ENVVAR = 'BioKEEN_DATA'
-DATA_DIR = os.environ.get(DATA_DIR_ENVVAR) or os.path.abspath(os.path.join(HERE, os.pardir, os.pardir, 'data'))
+
+
+class BiokeenConfig(easy_config.EasyConfig):
+    """Configuration for BioKEEN."""
+
+    NAME = 'biokeen'
+    FILES = [
+        os.path.join(os.path.expanduser('~'), '.config', 'biokeen.cfg'),
+        os.path.join(os.path.expanduser('~'), '.config', 'config.ini'),
+    ]
+
+    #: the data directory where TSVs get exported
+    data: str = os.path.abspath(os.path.join(HERE, os.pardir, os.pardir, 'data'))
+
+
+biokeen_config = BiokeenConfig.load()
+
+DATA_DIR = biokeen_config.data
 os.makedirs(DATA_DIR, exist_ok=True)
 
 VERSION = '0.0.4-dev'
-
-CONFIG_PATH = os.path.join(DATA_DIR, "configuration.json")
 EMOJI = '🍩'
 
 # Available databases
