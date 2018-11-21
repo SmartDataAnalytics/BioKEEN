@@ -9,7 +9,7 @@ DATA_DIR_ENVVAR = 'BioKEEN_DATA'
 DATA_DIR = os.environ.get(DATA_DIR_ENVVAR) or os.path.abspath(os.path.join(HERE, os.pardir, os.pardir, 'data'))
 os.makedirs(DATA_DIR, exist_ok=True)
 
-VERSION = '0.0.5-dev'
+VERSION = '0.0.5'
 
 CONFIG_PATH = os.path.join(DATA_DIR, "configuration.json")
 EMOJI = '🍩'
