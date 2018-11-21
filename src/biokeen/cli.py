@@ -8,6 +8,7 @@ from collections import OrderedDict
 
 import click
 import pykeen
+
 from bio2bel.constants import get_global_connection
 from pykeen.cli import (
     prompt_device, prompt_embedding_model, prompt_evaluation_parameters, prompt_execution_parameters,
@@ -15,13 +16,15 @@ from pykeen.cli import (
 )
 from pykeen.constants import EXECUTION_MODE, HPO_MODE, TRAINING_MODE, TRAINING_SET_PATH
 from pykeen.predict import start_predictions_piepline
-from pykeen.utilities.cli_utils.cli_print_msg_helper import (
-    print_execution_mode_message, print_section_divider, )
-
 from biokeen.build import ensure_compath, ensure_drugbank, ensure_hippie, iterate_source_paths
 from biokeen.cli_utils.bio_2_bel_utils import install_bio2bel_module
 from biokeen.cli_utils.cli_print_msg_helper import print_intro, print_welcome_message
 from biokeen.cli_utils.cli_query_helper import select_database
+
+from pykeen.utilities.cli_utils.cli_print_msg_helper import (
+    print_execution_mode_message, print_section_divider, )
+
+
 
 connection_option = click.option(
     '-c',
