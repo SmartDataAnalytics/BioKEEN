@@ -27,29 +27,38 @@ biokeen_config = BiokeenConfig.load()
 DATA_DIR = biokeen_config.data
 os.makedirs(DATA_DIR, exist_ok=True)
 
-VERSION = '0.0.4-dev'
+
+VERSION = '0.0.6-dev'
+CONFIG_PATH = os.path.join(DATA_DIR, "configuration.json")
+
 EMOJI = '🍩'
 
 # Available databases
 COMPATH_NAME = 'compath'
-HIPPE_NAME = 'hippie'
+HIPPIE_NAME = 'hippie'
 KEGG_NAME = 'kegg'
 MIRTARBASE_NAME = 'mirtarbase'
 MSIG_NAME = 'msig'
 REACTOME_NAME = 'reactome'
 WIKIPATHWAYS_NAME = 'wikipathways'
 DRUGBANK_NAME = 'drugbank'
+ADEPTUS_NAME = 'adeptus'
+HSDN_NAME = 'hsdn'
+INTERPRO_NAME = 'interpro'
 
 # ToDo: Add databases
 DATABASES = [
     COMPATH_NAME,
-    HIPPE_NAME,
+    HIPPIE_NAME,
     KEGG_NAME,
     MIRTARBASE_NAME,
     MSIG_NAME,
     REACTOME_NAME,
     WIKIPATHWAYS_NAME,
     DRUGBANK_NAME,
+    ADEPTUS_NAME,
+    HSDN_NAME,
+    INTERPRO_NAME,
 ]
 
 ID_TO_DATABASE_MAPPING = dict(enumerate(DATABASES, start=1))

@@ -10,14 +10,13 @@ import click
 import pykeen
 from bio2bel.constants import get_global_connection
 from pykeen.cli import (
-    _configure_evaluation_specific_parameters, device_prompt, execution_mode_specific_prompt, model_selection_prompt,
-    output_direc_prompt, training_file_prompt,
-    random_seed_prompt)
+    prompt_device, prompt_embedding_model, prompt_evaluation_parameters, prompt_execution_parameters,
+    prompt_output_directory, prompt_random_seed, prompt_training_file,
+)
 from pykeen.constants import EXECUTION_MODE, HPO_MODE, TRAINING_MODE, TRAINING_SET_PATH
 from pykeen.predict import start_predictions_piepline
 from pykeen.utilities.cli_utils.cli_print_msg_helper import (
-    print_execution_mode_message, print_section_divider, print_training_set_message,
-)
+    print_execution_mode_message, print_section_divider, )
 
 from biokeen.build import ensure_compath, ensure_drugbank, ensure_hippie, iterate_source_paths
 from biokeen.cli_utils.bio_2_bel_utils import install_bio2bel_module
@@ -52,8 +51,7 @@ def prompt_config(connection, rebuild):
         database_name = select_database()
         config[TRAINING_SET_PATH] = install_bio2bel_module(name=database_name, connection=connection, rebuild=rebuild)
     else:
-        print_training_set_message()
-        config = training_file_prompt(config)
+        prompt_training_file(config)
 
     print_section_divider()
 
@@ -67,27 +65,27 @@ def prompt_config(connection, rebuild):
     print_section_divider()
 
     # Step 4: Ask for model
-    model_name = model_selection_prompt()
+    model_name = prompt_embedding_model()
     print_section_divider()
 
     # Step 5: Query parameters depending on the selected execution mode
-    config = execution_mode_specific_prompt(config=config, model_name=model_name)
+    prompt_execution_parameters(config=config, model_name=model_name)
     print_section_divider()
 
-    config.update(_configure_evaluation_specific_parameters(config[EXECUTION_MODE]))
+    prompt_evaluation_parameters(config)
 
     print_section_divider()
 
     # Step 6: Please select a random seed
-    config = random_seed_prompt(config=config)
+    prompt_random_seed(config)
     print_section_divider()
 
     # Step 7: Query device to train on
-    config = device_prompt(config=config)
+    prompt_device(config)
     print_section_divider()
 
     # Step 8: Define output directory
-    config = output_direc_prompt(config=config)
+    prompt_output_directory(config)
     print_section_divider()
 
     return config
@@ -104,7 +102,6 @@ def main():  # noqa: D401
 @click.option('-r', '--rebuild', is_flag=True)
 def start(config, connection, rebuild):
     """Start BioKEEN pipeline."""
-
     if config is None:
         config = prompt_config(connection, rebuild)
     else:
