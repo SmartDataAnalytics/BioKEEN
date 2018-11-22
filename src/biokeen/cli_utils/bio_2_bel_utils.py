@@ -68,7 +68,7 @@ def install_bio2bel_module(name, connection, rebuild):
     manager_cls = bio2bel_module.Manager
 
     if not issubclass(manager_cls, BELManagerMixin):
-        version = pkg_resources.get_distribution("construct").version
+        version = pkg_resources.get_distribution(module_name).version
         click.secho(f'{EMOJI} {module_name} v{version} does not produce BEL', bold=True, fg='red')
         sys.exit(1)
 
