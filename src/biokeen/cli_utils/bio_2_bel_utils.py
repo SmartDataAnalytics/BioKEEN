@@ -7,6 +7,7 @@ import os
 import sys
 
 import click
+import pkg_resources
 
 from bio2bel import AbstractManager
 from bio2bel.manager.bel_manager import BELManagerMixin
@@ -67,7 +68,8 @@ def install_bio2bel_module(name, connection, rebuild):
     manager_cls = bio2bel_module.Manager
 
     if not issubclass(manager_cls, BELManagerMixin):
-        click.secho(f'{EMOJI} {module_name} does not produce BEL', bold=True, fg='red')
+        version = pkg_resources.get_distribution("construct").version
+        click.secho(f'{EMOJI} {module_name} v{version} does not produce BEL', bold=True, fg='red')
         sys.exit(1)
 
     manager = manager_cls(connection=connection)
