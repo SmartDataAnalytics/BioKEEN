@@ -6,7 +6,7 @@ BioKEEN (Biological KnowlEdge EmbeddiNgs) is a package for training and evaluati
 
 Citation
 --------
-If you use PyBEL in your work, please cite:
+If you use BioKEEN in your work, please cite:
 
 .. [1] Ali, M., *et al.* (2018). `BioKEEN: A library for learning and evaluating biological knowledge graph embeddings <https://doi.org/10.1101/475202>`_. bioRxiv 475202.
 
