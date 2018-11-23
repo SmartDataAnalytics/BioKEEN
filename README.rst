@@ -89,7 +89,7 @@ or alternatively:
 
 .. code-block:: python
 
-    python3 -m pykeen-summarize -d /path/to/experiments/directory -o /path/to/output/file.csv
+    python3 -m biokeen-summarize -d /path/to/experiments/directory -o /path/to/output/file.csv
 
 Getting Bio2BEL Data
 ********************
