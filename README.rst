@@ -76,7 +76,20 @@ or alternatively:
 .. code-block:: python
 
     python3 -m biokeen predict -m /path/to/model/directory -d /path/to/data/directory
+    
+Summarize the results of all experiments
+****************************************
+To summarize the results of all experiments and run following command:
 
+.. code-block:: sh
+
+    biokeen-summarize -d /path/to/experiments/directory -o /path/to/output/file.csv
+
+or alternatively:
+
+.. code-block:: python
+
+    python3 -m pykeen-summarize -d /path/to/experiments/directory -o /path/to/output/file.csv
 
 Getting Bio2BEL Data
 ********************
