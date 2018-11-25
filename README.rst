@@ -83,7 +83,7 @@ or alternatively:
 .. code-block:: python
 
     python3 -m biokeen predict -m /path/to/model/directory -d /path/to/data/directory
-    
+
 Summarize the results of all experiments
 ****************************************
 To summarize the results of all experiments, please run following command:
