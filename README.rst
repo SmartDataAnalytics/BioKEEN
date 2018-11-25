@@ -61,13 +61,13 @@ To start BioKEEN with an existing configuration file, please run the following c
 
 .. code-block:: sh
 
-    biokeen start -c /path/to/config.json
+    biokeen start -f /path/to/config.json
 
 or alternatively:
 
 .. code-block:: python
 
-    python3 -m biokeen start -c /path/to/config.json
+    python3 -m biokeen start -f /path/to/config.json
 
 
 Starting BioKEEN's prediction pipeline
