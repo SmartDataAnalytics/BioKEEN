@@ -28,7 +28,7 @@ DATA_DIR = biokeen_config.data
 os.makedirs(DATA_DIR, exist_ok=True)
 
 
-VERSION = '0.0.7-dev'
+VERSION = '0.0.7'
 CONFIG_PATH = os.path.join(DATA_DIR, "configuration.json")
 
 EMOJI = '🍩'
