@@ -19,7 +19,7 @@ from pykeen.cli import (
     prompt_output_directory, prompt_random_seed, prompt_training_file,
 )
 from pykeen.constants import EXECUTION_MODE, HPO_MODE, TRAINING_MODE, TRAINING_SET_PATH
-from pykeen.predict import start_predictions_piepline
+from pykeen.predict import start_predictions_pipeline
 from pykeen.utilities.cli_utils.cli_print_msg_helper import (
     print_execution_mode_message, print_section_divider, )
 
@@ -115,7 +115,7 @@ def start(config, connection, rebuild):
 @click.option('-d', '--data_direc', type=click.Path(file_okay=False, dir_okay=True))
 def predict(model_direc: str, data_direc: str):
     """Use a trained model to make predictions."""
-    start_predictions_piepline(model_direc, data_direc)
+    start_predictions_pipeline(model_direc, data_direc)
 
 
 @main.group()
