@@ -44,7 +44,7 @@ def to_pykeen_df(graph: BELGraph) -> pd.DataFrame:
     return pd.DataFrame(triples, columns=['subject', 'predicate', 'object'])
 
 
-def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Tuple[str, str, str]:
+def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Tuple[str, str, str]:  # noqa: C901
     """Get the triples' strings that should be written to the file."""
     data = graph[u][v][key]
     relation = data[RELATION]
