@@ -11,8 +11,8 @@ from tqdm import tqdm
 
 from pybel import BELGraph
 from pybel.constants import (
-    ACTIVITY, ASSOCIATION, CORRELATIVE_RELATIONS, DIRECTLY_DECREASES, EQUIVALENT_TO, HAS_COMPONENT, IS_A, MODIFIER,
-    OBJECT, PART_OF, REGULATES, RELATION, TRANSCRIBED_TO, TRANSLATED_TO,
+    ACTIVITY, ASSOCIATION, CORRELATIVE_RELATIONS, DECREASES, DIRECTLY_DECREASES, EQUIVALENT_TO, HAS_COMPONENT, IS_A,
+    MODIFIER, OBJECT, PART_OF, REGULATES, RELATION, TRANSCRIBED_TO, TRANSLATED_TO,
 )
 from pybel.dsl import BaseEntity, MicroRna, Rna
 
@@ -119,6 +119,13 @@ def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Tuple
         return (
             f'{u.namespace}:{u.identifier or u.name}',
             data.get('association_type', ASSOCIATION),  # allow more specific association to be defined
+            f'{v.namespace}:{v.identifier or v.name}',
+        )
+
+    elif relation == DECREASES:
+        return (
+            f'{u.namespace}:{u.identifier or u.name}',
+            relation,
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
