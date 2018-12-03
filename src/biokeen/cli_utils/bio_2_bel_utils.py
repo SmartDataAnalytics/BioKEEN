@@ -87,5 +87,6 @@ def install_bio2bel_module(name, connection, rebuild):
     to_pickle(graph, pickle_path)
     click.secho(f'{EMOJI} generating PyKEEN TSV for {module_name}', bold=True)
     to_pykeen_file(graph, pykeen_df_path)
+    click.secho(f'{EMOJI} wrote PyKEEN TSV to {pykeen_df_path}', bold=True)
 
     return pykeen_df_path
