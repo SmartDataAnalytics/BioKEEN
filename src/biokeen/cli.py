@@ -20,8 +20,7 @@ from pykeen.cli import (
 )
 from pykeen.constants import EXECUTION_MODE, HPO_MODE, TRAINING_MODE, TRAINING_SET_PATH
 from pykeen.predict import start_predictions_pipeline
-from pykeen.utilities.cli_utils.cli_print_msg_helper import (
-    print_execution_mode_message, print_section_divider, )
+from pykeen.utilities.cli_utils.cli_print_msg_helper import print_execution_mode_message, print_section_divider
 
 connection_option = click.option(
     '-c',
@@ -92,6 +91,7 @@ def prompt_config(connection, rebuild):
 
 
 @click.group()
+@click.version_option()
 def main():  # noqa: D401
     """A command line interface for BioKEEN."""
 
