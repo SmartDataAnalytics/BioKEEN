@@ -14,13 +14,14 @@ from biokeen.build import ensure_compath, ensure_drugbank, ensure_hippie, iterat
 from biokeen.cli_utils.bio_2_bel_utils import install_bio2bel_module
 from biokeen.cli_utils.cli_print_msg_helper import print_intro, print_welcome_message
 from biokeen.cli_utils.cli_query_helper import select_database
-from pykeen.cli import (
+from pykeen.cli.prompt import (
     prompt_device, prompt_embedding_model, prompt_evaluation_parameters, prompt_execution_parameters,
     prompt_output_directory, prompt_random_seed, prompt_training_file,
 )
 from pykeen.constants import EXECUTION_MODE, HPO_MODE, TRAINING_MODE, TRAINING_SET_PATH
 from pykeen.predict import start_predictions_pipeline
-from pykeen.utilities.cli_utils.cli_print_msg_helper import print_execution_mode_message, print_section_divider
+from pykeen.cli.utils.cli_print_msg_helper import (
+    print_execution_mode_message, print_section_divider, )
 
 connection_option = click.option(
     '-c',
