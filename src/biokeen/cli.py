@@ -18,10 +18,9 @@ from pykeen.cli.prompt import (
     prompt_device, prompt_embedding_model, prompt_evaluation_parameters, prompt_execution_parameters,
     prompt_output_directory, prompt_random_seed, prompt_training_file,
 )
+from pykeen.cli.utils.cli_print_msg_helper import print_execution_mode_message, print_section_divider
 from pykeen.constants import EXECUTION_MODE, HPO_MODE, TRAINING_MODE, TRAINING_SET_PATH
 from pykeen.predict import start_predictions_pipeline
-from pykeen.cli.utils.cli_print_msg_helper import (
-    print_execution_mode_message, print_section_divider, )
 
 connection_option = click.option(
     '-c',
