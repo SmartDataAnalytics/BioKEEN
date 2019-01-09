@@ -2,8 +2,8 @@ sudo: false
 cache: pip
 language: python
 python:
-- 3.6
-- 3.7
+  - 3.6
+  - 3.7
 stages:
   - lint
   - docs
@@ -26,14 +26,14 @@ jobs:
     - env: TOXENV=docs
 matrix:
   allow_failures:
-      - env: TOXENV=vulture
-      - env: TOXENV=xenon
-      - python: 3.7
+    - env: TOXENV=vulture
+    - env: TOXENV=xenon
+    - python: "3.7"
 install:
-    - sh -c 'if [ "$TOXENV" = "py" ]; then pip install tox codecov; else pip install tox; fi'
+  - sh -c 'if [ "$TOXENV" = "py" ]; then pip install tox codecov coverage; else pip install tox; fi'
 script:
-- tox
+  - tox
 after_success:
-    - sh -c 'if [ "$TOXENV" = "py" ]; then tox -e coverage-report; codecov; fi'
+  - sh -c 'if [ "$TOXENV" = "py" ]; then tox -e coverage-report; codecov; fi'
 notifications:
   slack: pybel:n2KbWKBum3musnBg3L76gGwq
