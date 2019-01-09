@@ -12,8 +12,8 @@ from tqdm import tqdm
 
 from pybel import BELGraph
 from pybel.constants import (
-    ACTIVITY, ASSOCIATION, CORRELATIVE_RELATIONS, DECREASES, DIRECTLY_DECREASES, EQUIVALENT_TO, HAS_COMPONENT, IS_A,
-    MODIFIER, OBJECT, PART_OF, REGULATES, RELATION, TRANSCRIBED_TO, TRANSLATED_TO,
+    ACTIVITY, ASSOCIATION, CORRELATIVE_RELATIONS, DECREASES, DIRECTLY_DECREASES, DIRECTLY_INCREASES, EQUIVALENT_TO,
+    HAS_COMPONENT, INCREASES, IS_A, MODIFIER, OBJECT, PART_OF, REGULATES, RELATION, TRANSCRIBED_TO, TRANSLATED_TO,
 )
 from pybel.dsl import BaseEntity, MicroRna, Rna
 from pybel.typing import EdgeData
@@ -46,6 +46,20 @@ def to_pykeen_df(graph: BELGraph) -> pd.DataFrame:
     return pd.DataFrame(triples, columns=['subject', 'predicate', 'object'])
 
 
+class Converter(ABC):
+    """A condition and converter for a BEL edge."""
+
+    @staticmethod
+    @abstractmethod
+    def predicate(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData) -> bool:
+        """Test a BEL edge."""
+
+    @staticmethod
+    @abstractmethod
+    def convert(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData) -> Tuple[str, str, str]:
+        """Convert a BEL edge."""
+
+
 def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Optional[Tuple[str, str, str]]:  # noqa: C901
     """Get the triples' strings that should be written to the file."""
     data = graph[u][v][key]
@@ -65,26 +79,12 @@ def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Optio
         DecreasesConverter,
     ]
 
-    for converter in converters:
+    for converter in converters:  # maybe instead use Converter.__subclasses__()
         if converter.predicate(u, v, key, data):
             return converter.convert(u, v, key, data)
 
     logger.info(f'unhandled: {graph.edge_to_bel(u, v, data)}')
     return None
-
-
-class Converter(ABC):
-    """A condition and converter for a BEL edge."""
-
-    @staticmethod
-    @abstractmethod
-    def predicate(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData) -> bool:
-        """Test a BEL edge."""
-
-    @staticmethod
-    @abstractmethod
-    def convert(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData) -> Tuple[str, str, str]:
-        """Convert a BEL edge."""
 
 
 class _ConvertOnRelation(Converter):
@@ -147,7 +147,6 @@ class EquivalenceConverter(_ConvertOnRelation):
 
 
 class CorrelationConverter(Converter):
-
     @staticmethod
     def predicate(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData):
         return edge_data[RELATION] in CORRELATIVE_RELATIONS
@@ -162,10 +161,9 @@ class CorrelationConverter(Converter):
 
 
 class AssociationConverter(Converter):
-
     @staticmethod
     def predicate(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData):
-        return edge_data[RELATION] in CORRELATIVE_RELATIONS
+        return edge_data[RELATION] == ASSOCIATION
 
     @staticmethod
     def convert(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData):
@@ -190,31 +188,75 @@ class DecreasesConverter(Converter):
         )
 
 
-class RegulatesActivityConverter(Converter):
+class RegulatesAmountConverter(Converter):
+    relation = REGULATES
+    target_relation = 'regulatesAmountOf'
+
     @classmethod
     def predicate(cls, u, v, key, data):
         object_modifier = data.get(OBJECT)
-        return data[RELATION] == REGULATES and object_modifier and object_modifier.get(MODIFIER) == ACTIVITY
+        return data[RELATION] == cls.relation and (not object_modifier or not object_modifier.get(MODIFIER))
 
-    @staticmethod
-    def convert(u: BaseEntity, v: BaseEntity, key: str, data: EdgeData):
+    @classmethod
+    def convert(cls, u: BaseEntity, v: BaseEntity, key: str, data: EdgeData):
         return (
             f'{u.namespace}:{u.identifier or u.name}',
-            'activityDirectlyNegativelyRegulatesActivityOf',
+            cls.target_relation,
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
 
-class DecreasesExpressionConverter(Converter):
+class RegulatesActivityConverter(Converter):
+    relation = REGULATES
+    target_relation = 'activityDirectlyRegulatesActivityOf'
+
     @classmethod
     def predicate(cls, u, v, key, data):
-        return data[RELATION] == DIRECTLY_DECREASES and isinstance(u, MicroRna) and isinstance(v, Rna)
+        object_modifier = data.get(OBJECT)
+        return data[RELATION] == cls.relation and object_modifier and object_modifier.get(MODIFIER) == ACTIVITY
 
-    @staticmethod
-    def convert(u: BaseEntity, v: BaseEntity, key: str, data: EdgeData):
+    @classmethod
+    def convert(cls, u: BaseEntity, v: BaseEntity, key: str, data: EdgeData):
+        return (
+            f'{u.namespace}:{u.identifier or u.name}',
+            cls.target_relation,
+            f'{v.namespace}:{v.identifier or v.name}',
+        )
+
+
+class IncreasesActivityConverter(RegulatesActivityConverter):
+    relation = INCREASES
+    target_relation = 'activityDirectlyPositivelyRegulatesActivityOf'
+
+
+class DecreasesActivityConverter(RegulatesActivityConverter):
+    relation = DECREASES
+    target_relation = 'activityDirectlyNegativelyRegulatesActivityOf'
+
+
+class RegulatesExpressionConverter(Converter):
+    relation = REGULATES
+    target_relation = 'regulatesExpressionOf'
+
+    @classmethod
+    def predicate(cls, u, v, key, data):
+        return data[RELATION] == cls.relation and isinstance(u, MicroRna) and isinstance(v, Rna)
+
+    @classmethod
+    def convert(cls, u: BaseEntity, v: BaseEntity, key: str, data: EdgeData):
         # this is a mircoRNA regulation
         return (
             f'{u.namespace}:{u.identifier or u.name}',
-            'repressesExpressionOf',
+            cls.target_relation,
             f'{v.namespace}:{v.identifier or v.name}',
         )
+
+
+class IncreasesExpressionConverter(Converter):
+    relation = DIRECTLY_INCREASES
+    target_relation = 'increasesExpressionOf'
+
+
+class DecreasesExpressionConverter(Converter):
+    relation = DIRECTLY_DECREASES
+    target_relation = 'repressesExpressionOf'

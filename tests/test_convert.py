@@ -58,10 +58,12 @@ class TestConverters(unittest.TestCase):
         self.help_test_convert(CorrelationConverter, u, v, edge_data, triple)
 
     def test_convert_association_true(self):
-        """Test CorrelationConverter.predicate() true values."""
-        u, v, edge_data, triple = r1, r2, _rel(ASSOCIATION), ('HGNC:1', 'positiveCorrelation', 'HGNC:2')
+        """Test AssociationConverter.predicate() true values."""
+        u, v, edge_data, triple = r1, r2, _rel(ASSOCIATION), ('HGNC:1', 'association', 'HGNC:2')
         self.help_test_convert(AssociationConverter, u, v, edge_data, triple)
 
+    def test_convert_association_typed_true(self):
+        """Test AssociationConverter.predicate() true values."""
         u, v, edge_data, triple = r1, r2, {RELATION: ASSOCIATION, 'association_type': 'similarity'}, (
             'HGNC:1', 'similarity', 'HGNC:2')
         self.help_test_convert(AssociationConverter, u, v, edge_data, triple)
