@@ -3,8 +3,9 @@
 """Conversion utilities for BEL."""
 
 import logging
+from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import TextIO, Tuple, Union
+from typing import Optional, TextIO, Tuple, Union
 
 import pandas as pd
 from tqdm import tqdm
@@ -15,6 +16,7 @@ from pybel.constants import (
     MODIFIER, OBJECT, PART_OF, REGULATES, RELATION, TRANSCRIBED_TO, TRANSLATED_TO,
 )
 from pybel.dsl import BaseEntity, MicroRna, Rna
+from pybel.typing import EdgeData
 
 __all__ = [
     'to_pykeen_file',
@@ -44,35 +46,30 @@ def to_pykeen_df(graph: BELGraph) -> pd.DataFrame:
     return pd.DataFrame(triples, columns=['subject', 'predicate', 'object'])
 
 
-def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Tuple[str, str, str]:  # noqa: C901
+def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Optional[Tuple[str, str, str]]:  # noqa: C901
     """Get the triples' strings that should be written to the file."""
     data = graph[u][v][key]
     relation = data[RELATION]
     # subject_modifier = data.get(SUBJECT)
     object_modifier = data.get(OBJECT)
 
-    if relation in HAS_COMPONENT:
-        return (
-            f'{v.namespace}:{v.identifier or v.name}',
-            'partOf',
-            str(u),
-        )
+    converters = [
+        ConvertHasComponent,
+        ConvertPartOf,
+    ]
 
-    elif relation == PART_OF:
-        return (
-            f'{u.namespace}:{u.identifier or u.name}',
-            'partOf',
-            f'{v.namespace}:{v.identifier or v.name}',
-        )
+    for converter in converters:
+        if converter.predicate(u, v, key, data):
+            return converter.convert(u, v, key, data)
 
-    elif relation == REGULATES and object_modifier and object_modifier.get(MODIFIER) == ACTIVITY:
+    if relation == REGULATES and object_modifier and object_modifier.get(MODIFIER) == ACTIVITY:
         return (
             f'{u.namespace}:{u.identifier or u.name}',
             'activityDirectlyNegativelyRegulatesActivityOf',
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
-    elif relation == DIRECTLY_DECREASES and isinstance(u, MicroRna) and isinstance(v, Rna):
+    if relation == DIRECTLY_DECREASES and isinstance(u, MicroRna) and isinstance(v, Rna):
         # this is a mircoRNA regulation
         return (
             f'{u.namespace}:{u.identifier or u.name}',
@@ -80,54 +77,100 @@ def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Tuple
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
-    elif relation == TRANSLATED_TO:
+    if relation == TRANSLATED_TO:
         return (
             f'{u.namespace}:{u.identifier or u.name}',
             'ribosomallyTranslatesTo',
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
-    elif relation == TRANSCRIBED_TO:
+    if relation == TRANSCRIBED_TO:
         return (
             f'{u.namespace}:{u.identifier or u.name}',
             'transcribedTo',
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
-    elif relation == IS_A:
+    if relation == IS_A:
         return (
             f'{u.namespace}:{u.identifier or u.name}',
             'isA',
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
-    elif relation == EQUIVALENT_TO:
+    if relation == EQUIVALENT_TO:
         return (
             f'{u.namespace}:{u.identifier or u.name}',
             'equivalentTo',
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
-    elif relation in CORRELATIVE_RELATIONS:
+    if relation in CORRELATIVE_RELATIONS:
         return (
             f'{u.namespace}:{u.identifier or u.name}',
             relation,
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
-    elif relation == ASSOCIATION:
+    if relation == ASSOCIATION:
         return (
             f'{u.namespace}:{u.identifier or u.name}',
             data.get('association_type', ASSOCIATION),  # allow more specific association to be defined
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
-    elif relation == DECREASES:
+    if relation == DECREASES:
         return (
             f'{u.namespace}:{u.identifier or u.name}',
             relation,
             f'{v.namespace}:{v.identifier or v.name}',
         )
 
-    else:
-        logger.info(f'unhandled: {graph.edge_to_bel(u, v, data)}')
+    logger.info(f'unhandled: {graph.edge_to_bel(u, v, data)}')
+
+
+class _ConvertCondition(ABC):
+    """A condition and converter for a BEL edge."""
+
+    @staticmethod
+    @abstractmethod
+    def predicate(u: BaseEntity, v: BaseEntity, key: str, data: EdgeData) -> bool:
+        """Test a BEL edge."""
+
+    @staticmethod
+    @abstractmethod
+    def convert(u: BaseEntity, v: BaseEntity, key: str, data: EdgeData) -> Tuple[str, str, str]:
+        """Convert a BEL edge."""
+
+
+class _ConvertOnRelation(_ConvertCondition):
+    relation = ...
+
+    @classmethod
+    def predicate(cls, u, v, key, data):
+        """Test a BEL edge has a given relation."""
+        return data[RELATION] == cls.relation
+
+
+class ConvertHasComponent(_ConvertOnRelation):
+    relation = HAS_COMPONENT
+
+    @staticmethod
+    def convert(u: BaseEntity, v: BaseEntity, key: str, data: EdgeData):
+        return (
+            f'{v.namespace}:{v.identifier or v.name}',
+            'partOf',
+            str(u),
+        )
+
+
+class ConvertPartOf(_ConvertOnRelation):
+    relation = PART_OF
+
+    @staticmethod
+    def convert(u: BaseEntity, v: BaseEntity, key: str, data: EdgeData):
+        return (
+            f'{u.namespace}:{u.identifier or u.name}',
+            'partOf',
+            f'{v.namespace}:{v.identifier or v.name}',
+        )
