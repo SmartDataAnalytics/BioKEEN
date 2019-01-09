@@ -3,12 +3,18 @@
 """Tests for the conversion procedure"""
 
 import unittest
+from typing import Optional, Tuple, Type
 
-from pybel.constants import HAS_COMPONENT, PART_OF, RELATION
-from pybel.dsl import NamedComplexAbundance, Protein
+from pybel import BELGraph
+from pybel.constants import ASSOCIATION, HAS_COMPONENT, PART_OF, POSITIVE_CORRELATION, RELATION
+from pybel.dsl import BaseEntity, NamedComplexAbundance, Protein, Rna
 from pybel.testing.utils import n
+from pybel.typing import EdgeData
 
-from biokeen.convert import ConvertHasComponent, ConvertPartOf
+from biokeen.convert import (
+    AssociationConverter, Converter, CorrelationConverter, HasComponentConverter,
+    PartOfConverter, get_triple,
+)
 
 
 def _rel(x):
@@ -16,28 +22,58 @@ def _rel(x):
 
 
 p1 = Protein('HGNC', '1')
+r1 = Rna('HGNC', '1')
+r2 = Rna('HGNC', '2')
 nca1 = NamedComplexAbundance('FPLX', '1')
 
 
 class TestConverters(unittest.TestCase):
     """Tests for the converter classes."""
 
+    def help_test_convert(self,
+                          converter: Type[Converter],
+                          u: BaseEntity,
+                          v: BaseEntity,
+                          edge_data: EdgeData,
+                          triple: Optional[Tuple[str, str, str]] = None,
+                          ) -> None:
+        key = n()
+        if triple is not None:
+            self.assertTrue(converter.predicate(u, v, key, edge_data))
+            self.assertEqual(triple, converter.convert(u, v, key, edge_data))
+            graph = BELGraph()
+            graph.add_edge(u, v, key=key, **edge_data)
+            self.assertEqual(triple, get_triple(graph, u, v, key))
+        else:
+            self.assertFalse(converter.predicate(u, v, key, edge_data))
+
     def test_convert_has_component_true(self):
-        """Test ConvertHasComponent.predicate() true values."""
-        u, v, k, d = nca1, p1, n(), _rel(HAS_COMPONENT)
-        self.assertTrue(ConvertHasComponent.predicate(u, v, k, d))
-        trip = 'HGNC:1', 'partOf', 'complex(FPLX1)'
-        self.assertEqual(trip, ConvertHasComponent.convert(u, v, k, d))
-        self.assertEqual(trip, ConvertHasComponent.convert(u, v, k, d))
+        """Test HasComponentConverter.predicate() true values."""
+        u, v, edge_data, triple = nca1, p1, _rel(HAS_COMPONENT), ('HGNC:1', 'partOf', 'complex(FPLX:1)')
+        self.help_test_convert(HasComponentConverter, u, v, edge_data, triple)
+
+    def test_convert_correlation_true(self):
+        """Test CorrelationConverter.predicate() true values."""
+        u, v, edge_data, triple = r1, r2, _rel(POSITIVE_CORRELATION), ('HGNC:1', 'positiveCorrelation', 'HGNC:2')
+        self.help_test_convert(CorrelationConverter, u, v, edge_data, triple)
+
+    def test_convert_association_true(self):
+        """Test CorrelationConverter.predicate() true values."""
+        u, v, edge_data, triple = r1, r2, _rel(ASSOCIATION), ('HGNC:1', 'positiveCorrelation', 'HGNC:2')
+        self.help_test_convert(AssociationConverter, u, v, edge_data, triple)
+
+        u, v, edge_data, triple = r1, r2, {RELATION: ASSOCIATION, 'association_type': 'similarity'}, (
+            'HGNC:1', 'similarity', 'HGNC:2')
+        self.help_test_convert(AssociationConverter, u, v, edge_data, triple)
 
     def test_convert_has_component_false(self):
         """Test ConvertHasComponent.predicate() false values."""
-        self.assertFalse(ConvertHasComponent.predicate(nca1, p1, n(), _rel(PART_OF)))
+        self.help_test_convert(HasComponentConverter, nca1, p1, _rel(PART_OF))
 
     def test_convert_part_of_true(self):
         """Test ConvertPartOf.predicate() true values."""
-        self.assertFalse(ConvertPartOf.predicate(nca1, p1, n(), _rel(HAS_COMPONENT)))
+        self.assertFalse(PartOfConverter.predicate(nca1, p1, n(), _rel(HAS_COMPONENT)))
 
     def test_convert_part_of_false(self):
         """Test ConvertPartOf.predicate() false values."""
-        self.assertTrue(ConvertPartOf.predicate(nca1, p1, n(), _rel(PART_OF)))
+        self.assertTrue(PartOfConverter.predicate(nca1, p1, n(), _rel(PART_OF)))
