@@ -40,6 +40,7 @@ KEGG_NAME = 'kegg'
 MIRTARBASE_NAME = 'mirtarbase'
 MSIG_NAME = 'msig'
 REACTOME_NAME = 'reactome'
+SIDER_NAME = 'sider'
 WIKIPATHWAYS_NAME = 'wikipathways'
 DRUGBANK_NAME = 'drugbank'
 ADEPTUS_NAME = 'adeptus'
@@ -54,6 +55,7 @@ DATABASES = [
     MIRTARBASE_NAME,
     MSIG_NAME,
     REACTOME_NAME,
+    SIDER_NAME,
     WIKIPATHWAYS_NAME,
     DRUGBANK_NAME,
     ADEPTUS_NAME,
