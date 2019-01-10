@@ -84,7 +84,7 @@ def install_bio2bel_module(name, connection, rebuild):
     click.secho(f'{EMOJI} generating BEL for {module_name}', bold=True)
     graph = manager.to_bel()
     click.echo(f'Summary: {graph.number_of_nodes()} nodes / {graph.number_of_edges()} edges')
-    to_json_path(graph, json_path)
+    to_json_path(graph, json_path, indent=2)
     click.secho(f'{EMOJI} generating PyKEEN TSV for {module_name}', bold=True)
     to_pykeen_file(graph, pykeen_df_path)
     click.secho(f'{EMOJI} wrote PyKEEN TSV to {pykeen_df_path}', bold=True)
