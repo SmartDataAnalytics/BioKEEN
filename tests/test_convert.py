@@ -5,11 +5,12 @@
 import unittest
 from typing import Tuple, Type
 
-from biokeen.convert import (
-    AssociationConverter, Converter, CorrelationConverter, DrugIndicationConverter, DrugSideEffectConverter,
-    MiRNADecreasesExpressionConverter, NamedComplexHasComponentConverter, PartOfNamedComplexConverter,
-    RegulatesActivityConverter,
-    get_triple,
+from biokeen.convert import get_triple
+from biokeen.convert.converters import (
+    AssociationConverter, Converter, CorrelationConverter, DecreasesAmountConverter, DrugIndicationConverter,
+    DrugSideEffectConverter, IncreasesAmountConverter, MiRNADecreasesExpressionConverter,
+    NamedComplexHasComponentConverter, PartOfNamedComplexConverter, RegulatesActivityConverter,
+    RegulatesAmountConverter,
 )
 from pybel import BELGraph
 from pybel.constants import (
@@ -50,6 +51,10 @@ converters_true_list = [
     # Found in ADEPTUS
     (CorrelationConverter, d1, r1, _rel(POSITIVE_CORRELATION), ('MESH:1', 'positiveCorrelation', 'HGNC:1')),
     (CorrelationConverter, d1, r1, _rel(NEGATIVE_CORRELATION), ('MESH:1', 'negativeCorrelation', 'HGNC:1')),
+    # Found in LINCS (not integrated yet)
+    (RegulatesAmountConverter, a1, r1, _rel(REGULATES), ('CHEBI:1', 'regulatesAmountOf', 'HGNC:1')),
+    (IncreasesAmountConverter, a1, r1, _rel(INCREASES), ('CHEBI:1', 'increasesAmountOf', 'HGNC:1')),
+    (DecreasesAmountConverter, a1, r1, _rel(DECREASES), ('CHEBI:1', 'decreasesAmountOf', 'HGNC:1')),
     # Found in SIDER
     (DrugSideEffectConverter, a1, d1, _rel(INCREASES), ('CHEBI:1', 'increases', 'MESH:1')),
     (DrugIndicationConverter, a1, d1, _rel(DECREASES), ('CHEBI:1', 'decreases', 'MESH:1')),

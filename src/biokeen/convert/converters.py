@@ -1,80 +1,68 @@
 # -*- coding: utf-8 -*-
 
-"""Conversion utilities for BEL."""
+"""Conversion base classes."""
 
-import logging
-from pathlib import Path
-from typing import Optional, TextIO, Tuple, Union
+from abc import ABC, abstractmethod
+from typing import Tuple
 
-import pandas as pd
-from tqdm import tqdm
-
-from pybel import BELGraph
 from pybel.constants import (
     ACTIVITY, ASSOCIATION, CORRELATIVE_RELATIONS, DECREASES, DIRECTLY_DECREASES, DIRECTLY_INCREASES, EQUIVALENT_TO,
-    HAS_COMPONENT, INCREASES, IS_A, MODIFIER, OBJECT, PART_OF, REGULATES, RELATION, TRANSCRIBED_TO, TRANSLATED_TO,
+    HAS_COMPONENT, INCREASES, IS_A, MODIFIER, OBJECT, PART_OF, REGULATES, RELATION,
 )
 from pybel.dsl import Abundance, BaseEntity, MicroRna, NamedComplexAbundance, Pathology, Protein, Rna
 from pybel.typing import EdgeData
-from .converters import Converter, SimpleConverter, SimpleTypedPredicate, TypedConverter
-
-__all__ = [
-    'to_pykeen_file',
-    'to_pykeen_df',
-    'get_triple',
-]
-
-logger = logging.getLogger(__name__)
 
 
-def to_pykeen_file(graph: BELGraph, file: Union[str, Path, TextIO]) -> None:
-    """Write the relationships in the BEL graph to a KEEN TSV file."""
-    df = to_pykeen_df(graph)
-    df.to_csv(file, sep='\t', index=None, header=None)
+class Converter(ABC):
+    """A condition and converter for a BEL edge."""
+
+    @staticmethod
+    @abstractmethod
+    def predicate(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData) -> bool:
+        """Test a BEL edge."""
+
+    @staticmethod
+    @abstractmethod
+    def convert(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData) -> Tuple[str, str, str]:
+        """Convert a BEL edge."""
 
 
-def to_pykeen_df(graph: BELGraph) -> pd.DataFrame:
-    """Get a pandas DataFrame representing the triples."""
-    triples = (
-        get_triple(graph, u, v, key)
-        for u, v, key in tqdm(graph.edges(keys=True), total=graph.number_of_edges(), desc='preparing TSV')
-    )
-
-    # clean duplicates and Nones
-    triples = list(sorted({triple for triple in triples if triple is not None}))
-
-    return pd.DataFrame(triples, columns=['subject', 'predicate', 'object'])
+class SimpleConverter(Converter):
+    @classmethod
+    def convert(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData):
+        return (
+            f'{u.namespace}:{u.identifier or u.name}',
+            edge_data[RELATION],
+            f'{v.namespace}:{v.identifier or v.name}',
+        )
 
 
-def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Optional[Tuple[str, str, str]]:  # noqa: C901
-    """Get the triples' strings that should be written to the file."""
-    data = graph[u][v][key]
+class TypedConverter(Converter):
+    target_relation = None
 
-    # order is important
+    @classmethod
+    def convert(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData):
+        return (
+            f'{u.namespace}:{u.identifier or u.name}',
+            cls.target_relation,
+            f'{v.namespace}:{v.identifier or v.name}',
+        )
 
-    converters = [
-        NamedComplexHasComponentConverter,
-        PartOfNamedComplexConverter,
-        RegulatesActivityConverter,
-        MiRNADecreasesExpressionConverter,
-        MiRNADirectlyDecreasesExpressionConverter,
-        TranscriptionConverter,
-        TranscriptionConverter,
-        IsAConverter,
-        EquivalenceConverter,
-        CorrelationConverter,
-        AssociationConverter,
-        DrugIndicationConverter,
-        DrugSideEffectConverter,
-        DecreasesConverter,
-    ]
 
-    for converter in converters:
-        if converter.predicate(u, v, key, data):
-            return converter.convert(u, v, key, data)
+class SimpleTypedPredicate(Converter):
+    """Finds BEL statements like ``A(X) B C(Y)`` where relation B and types A and C are defined in the class."""
 
-    logger.info(f'unhandled: {graph.edge_to_bel(u, v, data)}')
-    return None
+    subject_type = ...
+    relation = ...
+    object_type = ...
+
+    @classmethod
+    def predicate(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData):
+        return (
+                isinstance(u, cls.subject_type) and
+                edge_data[RELATION] == cls.relation and
+                isinstance(v, cls.object_type)
+        )
 
 
 class _ConvertOnRelation(Converter):
@@ -109,27 +97,16 @@ class NamedComplexHasComponentConverter(SimpleTypedPredicate):
         )
 
 
-class _BoringConvertOnRelation(_ConvertOnRelation):
-    relation = ...
-    target_relation = ...
-
-    @classmethod
-    def convert(cls, u: BaseEntity, v: BaseEntity, key: str, data: EdgeData):
-        return (
-            f'{u.namespace}:{u.identifier or u.name}',
-            cls.target_relation,
-            f'{v.namespace}:{v.identifier or v.name}',
-        )
-
-
-class TranslationConverter(_BoringConvertOnRelation):
+'''
+class TranslationConverter(TypedConverter):
     relation = TRANSLATED_TO
     target_relation = 'ribosomallyTranslatesTo'
 
 
-class TranscriptionConverter(_BoringConvertOnRelation):
+class TranscriptionConverter(TypedConverter):
     relation = TRANSCRIBED_TO
     target_relation = 'ribosomallyTranslatesTo'
+'''
 
 
 class IsAConverter(_ConvertOnRelation):
@@ -181,14 +158,6 @@ class DrugSideEffectConverter(DrugEffectConverter):
     relation = INCREASES
 
 
-class DecreasesConverter(SimpleConverter):
-    """Converts BEL statements like ``?(X) -| ?(Y)``."""
-
-    @staticmethod
-    def predicate(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData):
-        return edge_data[RELATION] == DECREASES
-
-
 class RegulatesAmountConverter(TypedConverter):
     relation = REGULATES
     target_relation = 'regulatesAmountOf'
@@ -197,6 +166,16 @@ class RegulatesAmountConverter(TypedConverter):
     def predicate(cls, u, v, key, data):
         object_modifier = data.get(OBJECT)
         return data[RELATION] == cls.relation and (not object_modifier or not object_modifier.get(MODIFIER))
+
+
+class IncreasesAmountConverter(RegulatesAmountConverter):
+    relation = INCREASES
+    target_relation = 'increasesAmountOf'
+
+
+class DecreasesAmountConverter(RegulatesAmountConverter):
+    relation = DECREASES
+    target_relation = 'decreasesAmountOf'
 
 
 class RegulatesActivityConverter(TypedConverter):
