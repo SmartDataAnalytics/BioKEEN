@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from typing import Dict, Mapping, Optional
 
 import pykeen
-
 from pykeen.utilities.pipeline import Pipeline
 
 
