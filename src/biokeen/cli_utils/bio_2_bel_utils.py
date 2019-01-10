@@ -13,7 +13,7 @@ from bio2bel import AbstractManager
 from bio2bel.manager.bel_manager import BELManagerMixin
 from biokeen.constants import DATA_DIR, EMOJI
 from biokeen.convert import to_pykeen_file
-from pybel import from_pickle, to_pickle
+from pybel import from_json_path, to_json_path
 
 
 def _import_bio2bel_module(package: str):
@@ -47,18 +47,18 @@ def install_bio2bel_module(name, connection, rebuild):
     if name == 'compath':  # special case for compath
         module_name = 'compath_resources'
     else:
-        module_name = f"bio2bel_{name}"
+        module_name = f'bio2bel_{name}'
 
     pykeen_df_path = os.path.join(DATA_DIR, f'{name}.keen.tsv')
-    pickle_path = os.path.join(DATA_DIR, f'{name}.bel.pickle')
+    json_path = os.path.join(DATA_DIR, f'{name}.bel.json')
 
     if os.path.exists(pykeen_df_path) and not rebuild:
         click.secho(f'{EMOJI} {module_name} has already been retrieved. See: {pykeen_df_path}', bold=True)
         return pykeen_df_path
 
-    if os.path.exists(pickle_path) and not rebuild:
-        click.secho(f'{EMOJI} loaded {module_name} pickle: {pickle_path}', bold=True)
-        graph = from_pickle(pickle_path)
+    if os.path.exists(json_path) and not rebuild:
+        click.secho(f'{EMOJI} loaded {module_name} JSON: {json_path}', bold=True)
+        graph = from_json_path(json_path)
         to_pykeen_file(graph, pykeen_df_path)
         return pykeen_df_path
 
@@ -84,7 +84,7 @@ def install_bio2bel_module(name, connection, rebuild):
     click.secho(f'{EMOJI} generating BEL for {module_name}', bold=True)
     graph = manager.to_bel()
     click.echo(f'Summary: {graph.number_of_nodes()} nodes / {graph.number_of_edges()} edges')
-    to_pickle(graph, pickle_path)
+    to_json_path(graph, json_path)
     click.secho(f'{EMOJI} generating PyKEEN TSV for {module_name}', bold=True)
     to_pykeen_file(graph, pykeen_df_path)
     click.secho(f'{EMOJI} wrote PyKEEN TSV to {pykeen_df_path}', bold=True)
