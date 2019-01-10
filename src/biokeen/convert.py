@@ -53,8 +53,8 @@ def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Optio
     # order is important
 
     converters = [
-        ComplexHasComponentConverter,
-        PartOfComplexConverter,
+        NamedComplexHasComponentConverter,
+        PartOfNamedComplexConverter,
         RegulatesActivityConverter,
         DirectlyDecreasesExpressionConverter,
         TranscriptionConverter,
@@ -85,7 +85,7 @@ class _ConvertOnRelation(Converter):
         return edge_data[RELATION] == cls.relation
 
 
-class PartOfComplexConverter(SimpleTypedPredicate, SimpleConverter):
+class PartOfNamedComplexConverter(SimpleTypedPredicate, TypedConverter):
     """Converts BEL statements like ``p(X) partOf complex(Y)``."""
     subject_type = Protein
     relation = PART_OF
@@ -93,7 +93,7 @@ class PartOfComplexConverter(SimpleTypedPredicate, SimpleConverter):
     target_relation = 'partOf'
 
 
-class ComplexHasComponentConverter(SimpleTypedPredicate):
+class NamedComplexHasComponentConverter(SimpleTypedPredicate):
     """Converts BEL statements like ``complex(X) hasComponent p(Y)``."""
     subject_type = NamedComplexAbundance
     relation = HAS_COMPONENT
