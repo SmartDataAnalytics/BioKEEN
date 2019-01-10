@@ -7,11 +7,16 @@ from typing import Tuple, Type
 
 from biokeen.convert import (
     AssociationConverter, Converter, CorrelationConverter, DrugIndicationConverter, DrugSideEffectConverter,
-    NamedComplexHasComponentConverter, PartOfNamedComplexConverter, get_triple,
+    MiRNADecreasesExpressionConverter, NamedComplexHasComponentConverter, PartOfNamedComplexConverter,
+    RegulatesActivityConverter,
+    get_triple,
 )
 from pybel import BELGraph
-from pybel.constants import ASSOCIATION, DECREASES, HAS_COMPONENT, INCREASES, PART_OF, POSITIVE_CORRELATION, RELATION
-from pybel.dsl import Abundance, BaseEntity, MicroRna, NamedComplexAbundance, Pathology, Protein, Rna
+from pybel.constants import (
+    ASSOCIATION, DECREASES, HAS_COMPONENT, INCREASES, NEGATIVE_CORRELATION, OBJECT, PART_OF, POSITIVE_CORRELATION,
+    REGULATES, RELATION,
+)
+from pybel.dsl import Abundance, BaseEntity, MicroRna, NamedComplexAbundance, Pathology, Protein, Rna, activity
 from pybel.testing.utils import n
 from pybel.typing import EdgeData
 
@@ -20,7 +25,11 @@ def _rel(x):
     return {RELATION: x}
 
 
-def _rela(y):
+def _rela(x, y=None):
+    return {RELATION: x, OBJECT: activity(y)}
+
+
+def _assoc(y):
     return {RELATION: ASSOCIATION, 'association_type': y}
 
 
@@ -35,11 +44,21 @@ nca1 = NamedComplexAbundance('FPLX', '1')
 converters_true_list = [
     (NamedComplexHasComponentConverter, nca1, p1, _rel(HAS_COMPONENT), ('HGNC:1', 'partOf', 'FPLX:1')),
     (PartOfNamedComplexConverter, p1, nca1, _rel(PART_OF), ('HGNC:1', 'partOf', 'FPLX:1')),
-    (CorrelationConverter, r1, r2, _rel(POSITIVE_CORRELATION), ('HGNC:1', 'positiveCorrelation', 'HGNC:2')),
     (AssociationConverter, r1, r2, _rel(ASSOCIATION), ('HGNC:1', 'association', 'HGNC:2')),
-    (AssociationConverter, r1, r2, _rela('similarity'), ('HGNC:1', 'similarity', 'HGNC:2')),
+    (AssociationConverter, r1, r2, _assoc('similarity'), ('HGNC:1', 'similarity', 'HGNC:2')),
+    (CorrelationConverter, r1, r2, _rel(POSITIVE_CORRELATION), ('HGNC:1', 'positiveCorrelation', 'HGNC:2')),
+    # Found in ADEPTUS
+    (CorrelationConverter, d1, r1, _rel(POSITIVE_CORRELATION), ('MESH:1', 'positiveCorrelation', 'HGNC:1')),
+    (CorrelationConverter, d1, r1, _rel(NEGATIVE_CORRELATION), ('MESH:1', 'negativeCorrelation', 'HGNC:1')),
+    # Found in SIDER
     (DrugSideEffectConverter, a1, d1, _rel(INCREASES), ('CHEBI:1', 'increases', 'MESH:1')),
     (DrugIndicationConverter, a1, d1, _rel(DECREASES), ('CHEBI:1', 'decreases', 'MESH:1')),
+    # Found in miRTarBase
+    (MiRNADecreasesExpressionConverter, m1, r1, _rel(DECREASES), ('MIRBASE:1', 'repressesExpressionOf', 'HGNC:1')),
+    # Found in DrugBank
+    (RegulatesActivityConverter, a1, p1, _rela(REGULATES), ('CHEBI:1', 'activityDirectlyRegulatesActivityOf', 'HGNC:1'))
+    # Found in HSDN
+    # 
 ]
 
 converters_false_list = [

@@ -14,7 +14,7 @@ from pybel.constants import (
     ACTIVITY, ASSOCIATION, CORRELATIVE_RELATIONS, DECREASES, DIRECTLY_DECREASES, DIRECTLY_INCREASES, EQUIVALENT_TO,
     HAS_COMPONENT, INCREASES, IS_A, MODIFIER, OBJECT, PART_OF, REGULATES, RELATION, TRANSCRIBED_TO, TRANSLATED_TO,
 )
-from pybel.dsl import Abundance, BaseEntity, MicroRna, NamedComplexAbundance, Pathology, Protein
+from pybel.dsl import Abundance, BaseEntity, MicroRna, NamedComplexAbundance, Pathology, Protein, Rna
 from pybel.typing import EdgeData
 from .converters import Converter, SimpleConverter, SimpleTypedPredicate, TypedConverter
 
@@ -56,7 +56,8 @@ def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Optio
         NamedComplexHasComponentConverter,
         PartOfNamedComplexConverter,
         RegulatesActivityConverter,
-        DirectlyDecreasesExpressionConverter,
+        MiRNADecreasesExpressionConverter,
+        MiRNADirectlyDecreasesExpressionConverter,
         TranscriptionConverter,
         TranscriptionConverter,
         IsAConverter,
@@ -218,33 +219,33 @@ class DecreasesActivityConverter(RegulatesActivityConverter):
     target_relation = 'activityDirectlyNegativelyRegulatesActivityOf'
 
 
-class RegulatesExpressionConverter(TypedConverter, SimpleTypedPredicate):
+class MiRNARegulatesExpressionConverter(TypedConverter, SimpleTypedPredicate):
     """Converts BEL statements like ``m(X) reg r(Y)``."""
     subject_type = MicroRna
     relation = REGULATES
-    object_type = RuntimeError
+    object_type = Rna
     target_relation = 'regulatesExpressionOf'
 
 
-class IncreasesExpressionConverter(RegulatesExpressionConverter):
+class MiRNAIncreasesExpressionConverter(MiRNARegulatesExpressionConverter):
     """Converts BEL statements like ``m(X) -> r(Y)``."""
     relation = INCREASES
     target_relation = 'increasesExpressionOf'
 
 
-class DirectlyIncreasesExpressionConverter(RegulatesExpressionConverter):
+class MiRNADirectlyIncreasesExpressionConverter(MiRNARegulatesExpressionConverter):
     """Converts BEL statements like ``m(X) => r(Y)``."""
     relation = DIRECTLY_INCREASES
     target_relation = 'increasesExpressionOf'
 
 
-class DecreasesExpressionConverter(RegulatesExpressionConverter):
+class MiRNADecreasesExpressionConverter(MiRNARegulatesExpressionConverter):
     """Converts BEL statements like ``m(X) -| r(Y)``."""
-    relation = DIRECTLY_DECREASES
+    relation = DECREASES
     target_relation = 'repressesExpressionOf'
 
 
-class DirectlyDecreasesExpressionConverter(RegulatesExpressionConverter):
+class MiRNADirectlyDecreasesExpressionConverter(MiRNARegulatesExpressionConverter):
     """Converts BEL statements like ``m(X) =| r(Y)``."""
     relation = DIRECTLY_DECREASES
     target_relation = 'repressesExpressionOf'
