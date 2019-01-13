@@ -4,7 +4,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## Use BioKEEN Programmatically to Train and Evalaute a KGE Model on ADEPTUS"
+    "#Using BioKEEN to Train and Evaluate a KGE Model on ADEPTUS"
    ]
   },
   {
