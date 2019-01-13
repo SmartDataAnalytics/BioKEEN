@@ -28,8 +28,11 @@ class Converter(ABC):
 
 
 class SimpleConverter(Converter):
+    """A class for converting the source and target that have simple names."""
+
     @classmethod
     def convert(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData):
+        """Convert a BEL edge."""
         return (
             f'{u.namespace}:{u.identifier or u.name}',
             edge_data[RELATION],
@@ -38,10 +41,13 @@ class SimpleConverter(Converter):
 
 
 class TypedConverter(Converter):
+    """A class for converting the source and target but replaces the relation."""
+
     target_relation = None
 
     @classmethod
     def convert(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData):
+        """Convert a BEL edge."""
         return (
             f'{u.namespace}:{u.identifier or u.name}',
             cls.target_relation,
@@ -58,10 +64,11 @@ class SimpleTypedPredicate(Converter):
 
     @classmethod
     def predicate(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData):
+        """Test a BEL edge."""
         return (
-                isinstance(u, cls.subject_type) and
-                edge_data[RELATION] == cls.relation and
-                isinstance(v, cls.object_type)
+            isinstance(u, cls.subject_type) and
+            edge_data[RELATION] == cls.relation and
+            isinstance(v, cls.object_type)
         )
 
 
@@ -76,6 +83,7 @@ class _ConvertOnRelation(Converter):
 
 class PartOfNamedComplexConverter(SimpleTypedPredicate, TypedConverter):
     """Converts BEL statements like ``p(X) partOf complex(Y)``."""
+
     subject_type = Protein
     relation = PART_OF
     object_type = NamedComplexAbundance
@@ -84,15 +92,18 @@ class PartOfNamedComplexConverter(SimpleTypedPredicate, TypedConverter):
 
 class NamedComplexHasComponentConverter(SimpleTypedPredicate):
     """Converts BEL statements like ``complex(X) hasComponent p(Y)``."""
+
     subject_type = NamedComplexAbundance
     relation = HAS_COMPONENT
     object_type = Protein
+    target_relation = 'partOf'
 
-    @staticmethod
-    def convert(u: BaseEntity, v: BaseEntity, key: str, data: EdgeData):
+    @classmethod
+    def convert(cls, u: BaseEntity, v: BaseEntity, key: str, data: EdgeData):
+        """Convert a BEL edge."""
         return (
             f'{v.namespace}:{v.identifier or v.name}',
-            'partOf',
+            cls.target_relation,
             f'{u.namespace}:{u.identifier or u.name}',
         )
 
@@ -110,18 +121,25 @@ class TranscriptionConverter(TypedConverter):
 
 
 class IsAConverter(_ConvertOnRelation):
+    """Converts BEL statements like ``X isA Y``."""
+
     relation = IS_A
     target_relation = 'isA'
 
 
 class EquivalenceConverter(_ConvertOnRelation):
+    """Converts BEL statements like ``X eq Y``."""
+
     relation = EQUIVALENT_TO
     target_relation = 'equivalentTo'
 
 
 class CorrelationConverter(SimpleConverter):
+    """Converts BEL statements like ``A(B) pos|neg|noCorrelation C(D)``."""
+
     @staticmethod
-    def predicate(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData):
+    def predicate(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData) -> bool:
+        """Test a BEL edge."""
         return edge_data[RELATION] in CORRELATIVE_RELATIONS
 
 
@@ -129,11 +147,13 @@ class AssociationConverter(Converter):
     """Converts BEL statements like ``a(X) -- path(Y)``."""
 
     @staticmethod
-    def predicate(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData):
+    def predicate(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData) -> bool:
+        """Test a BEL edge."""
         return edge_data[RELATION] == ASSOCIATION
 
     @staticmethod
-    def convert(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData):
+    def convert(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData) -> Tuple[str, str, str]:
+        """Convert a BEL edge."""
         return (
             f'{u.namespace}:{u.identifier or u.name}',
             edge_data.get('association_type', ASSOCIATION),  # allow more specific association to be defined
@@ -143,6 +163,7 @@ class AssociationConverter(Converter):
 
 class DrugEffectConverter(SimpleConverter, SimpleTypedPredicate):
     """Converts BEL statements like ``a(X) ? path(Y)``."""
+
     subject_type = Abundance
     relation = ...
     object_type = Pathology
@@ -150,56 +171,73 @@ class DrugEffectConverter(SimpleConverter, SimpleTypedPredicate):
 
 class DrugIndicationConverter(DrugEffectConverter):
     """Converts BEL statements like ``a(X) -| path(Y)``."""
+
     relation = DECREASES
 
 
 class DrugSideEffectConverter(DrugEffectConverter):
     """Converts BEL statements like ``a(X) -> path(Y)``."""
+
     relation = INCREASES
 
 
 class RegulatesAmountConverter(TypedConverter):
+    """Converts BEL statements like ``A(B) reg C(D)``."""
+
     relation = REGULATES
     target_relation = 'regulatesAmountOf'
 
     @classmethod
-    def predicate(cls, u, v, key, data):
-        object_modifier = data.get(OBJECT)
-        return data[RELATION] == cls.relation and (not object_modifier or not object_modifier.get(MODIFIER))
+    def predicate(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData) -> bool:
+        """Test a BEL edge."""
+        object_modifier = edge_data.get(OBJECT)
+        return edge_data[RELATION] == cls.relation and (not object_modifier or not object_modifier.get(MODIFIER))
 
 
 class IncreasesAmountConverter(RegulatesAmountConverter):
+    """Converts BEL statements like ``A(B) -> C(D)``."""
+
     relation = INCREASES
     target_relation = 'increasesAmountOf'
 
 
 class DecreasesAmountConverter(RegulatesAmountConverter):
+    """Converts BEL statements like ``A(B) -| C(D)``."""
+
     relation = DECREASES
     target_relation = 'decreasesAmountOf'
 
 
 class RegulatesActivityConverter(TypedConverter):
+    """Converts BEL statements like ``A(B) reg act(C(D) [, ma(E)])``."""
+
     relation = REGULATES
     target_relation = 'activityDirectlyRegulatesActivityOf'
 
     @classmethod
-    def predicate(cls, u, v, key, data):
-        object_modifier = data.get(OBJECT)
-        return data[RELATION] == cls.relation and object_modifier and object_modifier.get(MODIFIER) == ACTIVITY
+    def predicate(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData) -> bool:
+        """Test a BEL edge."""
+        object_modifier = edge_data.get(OBJECT)
+        return edge_data[RELATION] == cls.relation and object_modifier and object_modifier.get(MODIFIER) == ACTIVITY
 
 
 class IncreasesActivityConverter(RegulatesActivityConverter):
+    """Converts BEL statements like ``A(B) -> act(C(D) [, ma(E)])``."""
+
     relation = INCREASES
     target_relation = 'activityDirectlyPositivelyRegulatesActivityOf'
 
 
 class DecreasesActivityConverter(RegulatesActivityConverter):
+    """Converts BEL statements like ``A(B) -| act(C(D) [, ma(E)])``."""
+
     relation = DECREASES
     target_relation = 'activityDirectlyNegativelyRegulatesActivityOf'
 
 
 class MiRNARegulatesExpressionConverter(TypedConverter, SimpleTypedPredicate):
     """Converts BEL statements like ``m(X) reg r(Y)``."""
+
     subject_type = MicroRna
     relation = REGULATES
     object_type = Rna
@@ -208,23 +246,27 @@ class MiRNARegulatesExpressionConverter(TypedConverter, SimpleTypedPredicate):
 
 class MiRNAIncreasesExpressionConverter(MiRNARegulatesExpressionConverter):
     """Converts BEL statements like ``m(X) -> r(Y)``."""
+
     relation = INCREASES
     target_relation = 'increasesExpressionOf'
 
 
 class MiRNADirectlyIncreasesExpressionConverter(MiRNARegulatesExpressionConverter):
     """Converts BEL statements like ``m(X) => r(Y)``."""
+
     relation = DIRECTLY_INCREASES
     target_relation = 'increasesExpressionOf'
 
 
 class MiRNADecreasesExpressionConverter(MiRNARegulatesExpressionConverter):
     """Converts BEL statements like ``m(X) -| r(Y)``."""
+
     relation = DECREASES
     target_relation = 'repressesExpressionOf'
 
 
 class MiRNADirectlyDecreasesExpressionConverter(MiRNARegulatesExpressionConverter):
     """Converts BEL statements like ``m(X) =| r(Y)``."""
+
     relation = DIRECTLY_DECREASES
     target_relation = 'repressesExpressionOf'

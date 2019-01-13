@@ -4,13 +4,19 @@
 
 import logging
 from pathlib import Path
-from typing import Optional, TextIO, Union
+from typing import Optional, TextIO, Tuple, Union
 
 import pandas as pd
 from tqdm import tqdm
 
 from pybel import BELGraph
-from .converters import *
+from pybel.dsl import BaseEntity
+from .converters import (
+    AssociationConverter, CorrelationConverter, DecreasesAmountConverter, DrugIndicationConverter,
+    DrugSideEffectConverter, EquivalenceConverter, IncreasesAmountConverter, IsAConverter,
+    MiRNADecreasesExpressionConverter, MiRNADirectlyDecreasesExpressionConverter, NamedComplexHasComponentConverter,
+    PartOfNamedComplexConverter, RegulatesActivityConverter, RegulatesAmountConverter,
+)
 
 __all__ = [
     'to_pykeen_file',

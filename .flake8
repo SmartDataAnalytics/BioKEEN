@@ -5,7 +5,11 @@
 #########################
 [flake8]
 # flake8
-ignore = E501
+ignore =
+    # Line too long
+    E501
+    # Line break after binary operator
+    W504
 exclude =
     .tox,
     .git,
