@@ -13,8 +13,8 @@ This section links notebooks that show several of those scenarios.
 
 Link Prediction
 ~~~~~~~~~~~~~~~
-1. Drug Repositioning using Drug-Indication Networks from SIDER
-2. Application Scenario: miRNA-Target Interaction Prediction using miRTarBase
+1. Case Scenario applied to the ComPath dataset
+2. Case Scenario applied to the ADEPTUS dataset
 
 Entity Disambiguation
 ---------------------
