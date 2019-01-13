@@ -3,13 +3,10 @@ cache: pip
 language: python
 python:
   - 3.6
-  - 3.7
 stages:
   - lint
   - docs
   - test
-env:
-  - TOXENV=py
 jobs:
   include:
     # lint stage
@@ -24,6 +21,13 @@ jobs:
       env: TOXENV=doc8
     - env: TOXENV=readme
     - env: TOXENV=docs
+    - stage: test
+      env: TOXENV=py
+      python: "3.6"
+    - env: TOXENV=py
+      sudo: true
+      python: "3.7"
+      dist: xenial
 matrix:
   allow_failures:
     - env: TOXENV=vulture
@@ -35,5 +39,3 @@ script:
   - tox
 after_success:
   - sh -c 'if [ "$TOXENV" = "py" ]; then tox -e coverage-report; codecov; fi'
-notifications:
-  slack: pybel:n2KbWKBum3musnBg3L76gGwq
