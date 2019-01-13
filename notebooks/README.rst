@@ -13,8 +13,8 @@ This section links notebooks that show several of those scenarios.
 
 Link Prediction
 ~~~~~~~~~~~~~~~
-1. Case Scenario applied to the ComPath dataset
-2. Case Scenario applied to the ADEPTUS dataset
+1. Case Scenario applied to the ComPath dataset.
+2. Case Scenario applied to the ADEPTUS dataset.
 
 Entity Disambiguation
 ---------------------
