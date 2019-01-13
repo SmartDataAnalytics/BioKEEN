@@ -13,7 +13,6 @@ jobs:
     - stage: lint
       env: TOXENV=manifest
     - env: TOXENV=flake8
-    - env: TOXENV=vulture
     - env: TOXENV=xenon
     - env: TOXENV=pyroma
     # docs stage
@@ -30,7 +29,6 @@ jobs:
       dist: xenial
 matrix:
   allow_failures:
-    - env: TOXENV=vulture
     - env: TOXENV=xenon
     - python: "3.7"
 install:
