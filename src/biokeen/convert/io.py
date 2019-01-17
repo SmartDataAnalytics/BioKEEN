@@ -27,10 +27,15 @@ __all__ = [
 logger = logging.getLogger(__name__)
 
 
-def to_pykeen_file(graph: BELGraph, file: Union[str, Path, TextIO]) -> None:
+def to_pykeen_file(graph: BELGraph, file: Union[str, Path, TextIO]) -> bool:
     """Write the relationships in the BEL graph to a KEEN TSV file."""
     df = to_pykeen_df(graph)
+
+    if len(df.index) == 0:
+        return False
+
     df.to_csv(file, sep='\t', index=None, header=None)
+    return True
 
 
 def to_pykeen_df(graph: BELGraph) -> pd.DataFrame:
