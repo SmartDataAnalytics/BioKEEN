@@ -9,7 +9,7 @@ from pybel.constants import (
     ACTIVITY, ASSOCIATION, CORRELATIVE_RELATIONS, DECREASES, DIRECTLY_DECREASES, DIRECTLY_INCREASES, EQUIVALENT_TO,
     HAS_COMPONENT, INCREASES, IS_A, MODIFIER, OBJECT, PART_OF, REGULATES, RELATION,
 )
-from pybel.dsl import Abundance, BaseEntity, MicroRna, NamedComplexAbundance, Pathology, Protein, Rna
+from pybel.dsl import Abundance, BaseEntity, BiologicalProcess, MicroRna, NamedComplexAbundance, Pathology, Protein, Rna
 
 
 class Converter(ABC):
@@ -80,13 +80,23 @@ class _ConvertOnRelation(Converter):
         return edge_data[RELATION] == cls.relation
 
 
-class PartOfNamedComplexConverter(SimpleTypedPredicate, TypedConverter):
+class _PartOfConverter(SimpleTypedPredicate, TypedConverter):
+    relation = PART_OF
+    target_relation = 'partOf'
+
+
+class PartOfNamedComplexConverter(_PartOfConverter):
     """Converts BEL statements like ``p(X) partOf complex(Y)``."""
 
     subject_type = Protein
-    relation = PART_OF
     object_type = NamedComplexAbundance
-    target_relation = 'partOf'
+
+
+class PartOfBiologicalProcess(_PartOfConverter):
+    """Converts BEL statements like ``bp(X) partOf bp(Y)``."""
+
+    subject_type = BiologicalProcess
+    object_type = BiologicalProcess
 
 
 class NamedComplexHasComponentConverter(SimpleTypedPredicate):

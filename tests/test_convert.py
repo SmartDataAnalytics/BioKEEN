@@ -9,7 +9,7 @@ from biokeen.convert import get_triple
 from biokeen.convert.converters import (
     AssociationConverter, Converter, CorrelationConverter, DecreasesAmountConverter, DrugIndicationConverter,
     DrugSideEffectConverter, IncreasesAmountConverter, MiRNADecreasesExpressionConverter,
-    NamedComplexHasComponentConverter, PartOfNamedComplexConverter, RegulatesActivityConverter,
+    NamedComplexHasComponentConverter, PartOfBiologicalProcess, PartOfNamedComplexConverter, RegulatesActivityConverter,
     RegulatesAmountConverter,
 )
 from pybel import BELGraph
@@ -17,7 +17,10 @@ from pybel.constants import (
     ASSOCIATION, DECREASES, HAS_COMPONENT, INCREASES, NEGATIVE_CORRELATION, OBJECT, PART_OF, POSITIVE_CORRELATION,
     REGULATES, RELATION,
 )
-from pybel.dsl import Abundance, BaseEntity, MicroRna, NamedComplexAbundance, Pathology, Protein, Rna, activity
+from pybel.dsl import (
+    Abundance, BaseEntity, BiologicalProcess, MicroRna, NamedComplexAbundance, Pathology, Protein,
+    Rna, activity,
+)
 from pybel.testing.utils import n
 from pybel.typing import EdgeData
 
@@ -37,6 +40,8 @@ def _assoc(y):
 a1 = Abundance('CHEBI', '1')
 p1 = Protein('HGNC', '1')
 d1 = Pathology('MESH', '1')
+b1 = BiologicalProcess('GO', '1')
+b2 = BiologicalProcess('GO', '2')
 m1 = MicroRna('MIRBASE', '1')
 r1 = Rna('HGNC', '1')
 r2 = Rna('HGNC', '2')
@@ -45,6 +50,7 @@ nca1 = NamedComplexAbundance('FPLX', '1')
 converters_true_list = [
     (NamedComplexHasComponentConverter, nca1, p1, _rel(HAS_COMPONENT), ('HGNC:1', 'partOf', 'FPLX:1')),
     (PartOfNamedComplexConverter, p1, nca1, _rel(PART_OF), ('HGNC:1', 'partOf', 'FPLX:1')),
+    (PartOfBiologicalProcess, b1, b2, _rel(PART_OF), ('GO:1', 'partOf', 'GO:2')),
     (AssociationConverter, r1, r2, _rel(ASSOCIATION), ('HGNC:1', 'association', 'HGNC:2')),
     (AssociationConverter, r1, r2, _assoc('similarity'), ('HGNC:1', 'similarity', 'HGNC:2')),
     (CorrelationConverter, r1, r2, _rel(POSITIVE_CORRELATION), ('HGNC:1', 'positiveCorrelation', 'HGNC:2')),

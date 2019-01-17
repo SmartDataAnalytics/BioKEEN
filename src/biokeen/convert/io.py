@@ -15,7 +15,7 @@ from .converters import (
     AssociationConverter, CorrelationConverter, DecreasesAmountConverter, DrugIndicationConverter,
     DrugSideEffectConverter, EquivalenceConverter, IncreasesAmountConverter, IsAConverter,
     MiRNADecreasesExpressionConverter, MiRNADirectlyDecreasesExpressionConverter, NamedComplexHasComponentConverter,
-    PartOfNamedComplexConverter, RegulatesActivityConverter, RegulatesAmountConverter,
+    PartOfNamedComplexConverter, RegulatesActivityConverter, RegulatesAmountConverter, PartOfBiologicalProcess
 )
 
 __all__ = [
@@ -54,6 +54,7 @@ def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Optio
     converters = [
         NamedComplexHasComponentConverter,
         PartOfNamedComplexConverter,
+        PartOfBiologicalProcess,
         RegulatesActivityConverter,
         MiRNADecreasesExpressionConverter,
         MiRNADirectlyDecreasesExpressionConverter,
