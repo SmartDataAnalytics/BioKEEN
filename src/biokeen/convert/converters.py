@@ -65,9 +65,9 @@ class SimpleTypedPredicate(Converter):
     def predicate(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: Dict):
         """Test a BEL edge."""
         return (
-                isinstance(u, cls.subject_type) and
-                edge_data[RELATION] == cls.relation and
-                isinstance(v, cls.object_type)
+            isinstance(u, cls.subject_type) and
+            edge_data[RELATION] == cls.relation and
+            isinstance(v, cls.object_type)
         )
 
 
