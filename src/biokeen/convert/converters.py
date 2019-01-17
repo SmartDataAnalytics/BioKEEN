@@ -3,14 +3,13 @@
 """Conversion base classes."""
 
 from abc import ABC, abstractmethod
-from typing import Tuple
+from typing import Dict, Tuple
 
 from pybel.constants import (
     ACTIVITY, ASSOCIATION, CORRELATIVE_RELATIONS, DECREASES, DIRECTLY_DECREASES, DIRECTLY_INCREASES, EQUIVALENT_TO,
     HAS_COMPONENT, INCREASES, IS_A, MODIFIER, OBJECT, PART_OF, REGULATES, RELATION,
 )
 from pybel.dsl import Abundance, BaseEntity, MicroRna, NamedComplexAbundance, Pathology, Protein, Rna
-from pybel.typing import EdgeData
 
 
 class Converter(ABC):
@@ -18,12 +17,12 @@ class Converter(ABC):
 
     @staticmethod
     @abstractmethod
-    def predicate(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData) -> bool:
+    def predicate(u: BaseEntity, v: BaseEntity, key: str, edge_data: Dict) -> bool:
         """Test a BEL edge."""
 
     @staticmethod
     @abstractmethod
-    def convert(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData) -> Tuple[str, str, str]:
+    def convert(u: BaseEntity, v: BaseEntity, key: str, edge_data: Dict) -> Tuple[str, str, str]:
         """Convert a BEL edge."""
 
 
@@ -31,7 +30,7 @@ class SimpleConverter(Converter):
     """A class for converting the source and target that have simple names."""
 
     @classmethod
-    def convert(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData):
+    def convert(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: Dict):
         """Convert a BEL edge."""
         return (
             f'{u.namespace}:{u.identifier or u.name}',
@@ -46,7 +45,7 @@ class TypedConverter(Converter):
     target_relation = None
 
     @classmethod
-    def convert(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData):
+    def convert(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: Dict):
         """Convert a BEL edge."""
         return (
             f'{u.namespace}:{u.identifier or u.name}',
@@ -63,12 +62,12 @@ class SimpleTypedPredicate(Converter):
     object_type = ...
 
     @classmethod
-    def predicate(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData):
+    def predicate(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: Dict):
         """Test a BEL edge."""
         return (
-            isinstance(u, cls.subject_type) and
-            edge_data[RELATION] == cls.relation and
-            isinstance(v, cls.object_type)
+                isinstance(u, cls.subject_type) and
+                edge_data[RELATION] == cls.relation and
+                isinstance(v, cls.object_type)
         )
 
 
@@ -99,7 +98,7 @@ class NamedComplexHasComponentConverter(SimpleTypedPredicate):
     target_relation = 'partOf'
 
     @classmethod
-    def convert(cls, u: BaseEntity, v: BaseEntity, key: str, data: EdgeData):
+    def convert(cls, u: BaseEntity, v: BaseEntity, key: str, data: Dict):
         """Convert a BEL edge."""
         return (
             f'{v.namespace}:{v.identifier or v.name}',
@@ -138,7 +137,7 @@ class CorrelationConverter(SimpleConverter):
     """Converts BEL statements like ``A(B) pos|neg|noCorrelation C(D)``."""
 
     @staticmethod
-    def predicate(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData) -> bool:
+    def predicate(u: BaseEntity, v: BaseEntity, key: str, edge_data: Dict) -> bool:
         """Test a BEL edge."""
         return edge_data[RELATION] in CORRELATIVE_RELATIONS
 
@@ -147,12 +146,12 @@ class AssociationConverter(Converter):
     """Converts BEL statements like ``a(X) -- path(Y)``."""
 
     @staticmethod
-    def predicate(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData) -> bool:
+    def predicate(u: BaseEntity, v: BaseEntity, key: str, edge_data: Dict) -> bool:
         """Test a BEL edge."""
         return edge_data[RELATION] == ASSOCIATION
 
     @staticmethod
-    def convert(u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData) -> Tuple[str, str, str]:
+    def convert(u: BaseEntity, v: BaseEntity, key: str, edge_data: Dict) -> Tuple[str, str, str]:
         """Convert a BEL edge."""
         return (
             f'{u.namespace}:{u.identifier or u.name}',
@@ -188,7 +187,7 @@ class RegulatesAmountConverter(TypedConverter):
     target_relation = 'regulatesAmountOf'
 
     @classmethod
-    def predicate(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData) -> bool:
+    def predicate(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: Dict) -> bool:
         """Test a BEL edge."""
         object_modifier = edge_data.get(OBJECT)
         return edge_data[RELATION] == cls.relation and (not object_modifier or not object_modifier.get(MODIFIER))
@@ -215,7 +214,7 @@ class RegulatesActivityConverter(TypedConverter):
     target_relation = 'activityDirectlyRegulatesActivityOf'
 
     @classmethod
-    def predicate(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: EdgeData) -> bool:
+    def predicate(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: Dict) -> bool:
         """Test a BEL edge."""
         object_modifier = edge_data.get(OBJECT)
         return edge_data[RELATION] == cls.relation and object_modifier and object_modifier.get(MODIFIER) == ACTIVITY
