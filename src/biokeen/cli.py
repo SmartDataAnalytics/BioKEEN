@@ -4,6 +4,7 @@
 
 import json
 import logging
+import os
 from typing import List, Optional, TextIO
 
 import click
@@ -62,6 +63,14 @@ def ls():
     """List built data."""
     for path in iterate_source_paths():
         click.echo(path)
+
+
+@data.command()
+@click.confirmation_option()
+def clear():
+    """Remove all built data."""
+    for path in iterate_source_paths():
+        os.remove(path)
 
 
 @data.command()
