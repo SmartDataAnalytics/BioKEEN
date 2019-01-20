@@ -58,11 +58,16 @@ def to_pykeen_summary_path(df: pd.DataFrame, path: str, indent=2, **kwargs):
         json.dump(get_pykeen_summary(df), file, indent=indent, **kwargs)
 
 
-def to_pykeen_df(graph: BELGraph) -> pd.DataFrame:
-    """Get a pandas DataFrame representing the triples."""
+def to_pykeen_df(graph: BELGraph, use_tqdm: bool = True) -> pd.DataFrame:
+    """Get a DataFrame representing the triples."""
+    it = graph.edges(keys=True)
+
+    if use_tqdm:
+        it = tqdm(it, total=graph.number_of_edges(), desc='preparing TSV')
+
     triples = (
         get_triple(graph, u, v, key)
-        for u, v, key in tqdm(graph.edges(keys=True), total=graph.number_of_edges(), desc='preparing TSV')
+        for u, v, key in it
     )
 
     # clean duplicates and Nones
