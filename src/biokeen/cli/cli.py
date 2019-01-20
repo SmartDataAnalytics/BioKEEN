@@ -17,6 +17,7 @@ import os
 from typing import List, Optional, TextIO
 
 import click
+
 from bio2bel.constants import get_global_connection
 from biokeen.constants import DATA_DIR, iterate_source_paths
 

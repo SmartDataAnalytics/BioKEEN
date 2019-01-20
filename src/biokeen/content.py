@@ -11,10 +11,10 @@ from typing import Optional
 
 import numpy as np
 import pkg_resources
+
 from bio2bel import AbstractManager
 from bio2bel.manager.bel_manager import BELManagerMixin
 from pybel import from_json_path, to_json_path
-
 from .constants import DATA_DIR, EMOJI
 from .convert import to_pykeen_df, to_pykeen_path, to_pykeen_summary_path
 

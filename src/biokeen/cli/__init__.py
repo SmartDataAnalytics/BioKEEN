@@ -2,4 +2,4 @@
 
 """The command line interface for BioKEEN."""
 
-from .cli import main
+from .cli import main  # noqa: 401
