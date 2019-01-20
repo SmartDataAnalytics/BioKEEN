@@ -2,9 +2,11 @@
 
 """Input and output for BEL conversion."""
 
+import itertools as itt
+import json
 import logging
-from pathlib import Path
-from typing import Optional, TextIO, Tuple, Union
+from collections import Counter
+from typing import Dict, Optional, Tuple
 
 import pandas as pd
 from tqdm import tqdm
@@ -15,27 +17,45 @@ from .converters import (
     AssociationConverter, CorrelationConverter, DecreasesAmountConverter, DrugIndicationConverter,
     DrugSideEffectConverter, EquivalenceConverter, IncreasesAmountConverter, IsAConverter,
     MiRNADecreasesExpressionConverter, MiRNADirectlyDecreasesExpressionConverter, NamedComplexHasComponentConverter,
-    PartOfNamedComplexConverter, RegulatesActivityConverter, RegulatesAmountConverter, PartOfBiologicalProcess
+    PartOfBiologicalProcess, PartOfNamedComplexConverter, RegulatesActivityConverter, RegulatesAmountConverter,
 )
 
 __all__ = [
-    'to_pykeen_file',
+    'to_pykeen_path',
     'to_pykeen_df',
+    'get_pykeen_summary',
+    'to_pykeen_summary_path',
     'get_triple',
 ]
 
 logger = logging.getLogger(__name__)
 
 
-def to_pykeen_file(graph: BELGraph, file: Union[str, Path, TextIO]) -> bool:
+def to_pykeen_path(df: pd.DataFrame, path: str) -> bool:
     """Write the relationships in the BEL graph to a KEEN TSV file."""
-    df = to_pykeen_df(graph)
-
     if len(df.index) == 0:
         return False
-
-    df.to_csv(file, sep='\t', index=None, header=None)
+    df.to_csv(path, sep='\t', index=None, header=None)
     return True
+
+
+def get_pykeen_summary(df: pd.DataFrame) -> Dict:
+    """Summarize a KEEN dataframe."""
+    entity_count = Counter(itt.chain(df[df.columns[0]], df[df.columns[2]]))
+    return {
+        'namespaces': Counter(
+            element.split(':')[0]
+            for element in itt.chain(df[df.columns[0]], df[df.columns[2]])
+        ),
+        'entities': len(entity_count),
+        'relations': len(df.index),
+    }
+
+
+def to_pykeen_summary_path(df: pd.DataFrame, path: str, indent=2, **kwargs):
+    """Write the summary of a KEEN dataframe to a file."""
+    with open(path, 'w') as file:
+        json.dump(get_pykeen_summary(df), file, indent=indent, **kwargs)
 
 
 def to_pykeen_df(graph: BELGraph) -> pd.DataFrame:

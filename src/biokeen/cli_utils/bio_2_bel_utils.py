@@ -13,7 +13,7 @@ import pkg_resources
 from bio2bel import AbstractManager
 from bio2bel.manager.bel_manager import BELManagerMixin
 from biokeen.constants import DATA_DIR, EMOJI
-from biokeen.convert import to_pykeen_file
+from biokeen.convert import to_pykeen_df, to_pykeen_path, to_pykeen_summary_path
 from pybel import from_json_path, to_json_path
 
 
@@ -43,14 +43,17 @@ def _import_bio2bel_module(package: str):
     return b_module
 
 
+_SPECIAL_CASES = {
+    'compath': 'compath_resources',
+}
+
+
 def install_bio2bel_module(name: str, connection: str, rebuild: bool) -> Optional[str]:
     """Install Bio2BEL module."""
-    if name == 'compath':  # special case for compath
-        module_name = 'compath_resources'
-    else:
-        module_name = f'bio2bel_{name}'
+    module_name = _SPECIAL_CASES.get(name, f'bio2bel_{name}')
 
     pykeen_df_path = os.path.join(DATA_DIR, f'{name}.keen.tsv')
+    pykeen_df_summary_path = os.path.join(DATA_DIR, f'{name}.keen.summary.json')
     json_path = os.path.join(DATA_DIR, f'{name}.bel.json')
 
     if os.path.exists(pykeen_df_path) and not rebuild:
@@ -60,7 +63,9 @@ def install_bio2bel_module(name: str, connection: str, rebuild: bool) -> Optiona
     if os.path.exists(json_path) and not rebuild:
         click.secho(f'{EMOJI} loaded {module_name} JSON: {json_path}', bold=True)
         graph = from_json_path(json_path)
-        to_pykeen_file(graph, pykeen_df_path)
+        df = to_pykeen_df(graph)
+        to_pykeen_path(df, pykeen_df_path)
+        to_pykeen_summary_path(df, pykeen_df_summary_path)
         return pykeen_df_path
 
     bio2bel_module = _import_bio2bel_module(module_name)
@@ -89,7 +94,9 @@ def install_bio2bel_module(name: str, connection: str, rebuild: bool) -> Optiona
     to_json_path(graph, json_path, indent=2)
 
     click.secho(f'{EMOJI} generating PyKEEN TSV for {module_name}', bold=True)
-    success = to_pykeen_file(graph, pykeen_df_path)
+    df = to_pykeen_df(graph)
+    to_pykeen_summary_path(df, pykeen_df_summary_path)
+    success = to_pykeen_path(df, pykeen_df_path)
 
     if success:
         click.secho(f'{EMOJI} wrote PyKEEN TSV to {pykeen_df_path}', bold=True)
