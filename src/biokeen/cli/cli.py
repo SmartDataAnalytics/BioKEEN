@@ -1,6 +1,15 @@
 # -*- coding: utf-8 -*-
 
-"""A command line interface for BioKEEN."""
+"""A command line interface for BioKEEN.
+
+Why does this file exist, and why not put this in ``__main__``? You might be tempted to import things from ``__main__``
+later, but that will cause problems--the code will get executed twice:
+- When you run ``python3 -m biokeen`` python will execute``__main__.py`` as a script. That means there won't be any
+  ``biokeen.__main__`` in ``sys.modules``.
+- When you import __main__ it will get executed again (as a module) because
+  there's no ``biokeen.__main__`` in ``sys.modules``.
+.. seealso:: http://click.pocoo.org/5/setuptools/#setuptools-integration
+"""
 
 import json
 import logging
@@ -8,7 +17,6 @@ import os
 from typing import List, Optional, TextIO
 
 import click
-
 from bio2bel.constants import get_global_connection
 from biokeen.constants import DATA_DIR, iterate_source_paths
 
@@ -83,7 +91,7 @@ def get(names: List[str], connection: str, rebuild: bool, verbose: bool):
     if verbose:
         logging.basicConfig(level=logging.INFO)
 
-    from biokeen.cli_utils.bio_2_bel_utils import install_bio2bel_module
+    from biokeen.content import install_bio2bel_module
 
     for name in names:
         install_bio2bel_module(name, connection, rebuild)

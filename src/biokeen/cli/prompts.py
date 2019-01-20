@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 
-"""CLI utils."""
+"""Prompts for the BioKEEN command line interface."""
 
 from collections import OrderedDict
 from typing import Dict
 
 import click
 
-from biokeen.cli_utils.bio_2_bel_utils import install_bio2bel_module
-from biokeen.cli_utils.cli_print_msg_helper import print_intro, print_welcome_message
-from biokeen.cli_utils.cli_query_helper import select_database
+from biokeen.constants import ID_TO_DATABASE_MAPPING
 from pykeen.cli.prompt import (
     prompt_device, prompt_embedding_model, prompt_evaluation_parameters, prompt_execution_parameters,
     prompt_output_directory, prompt_random_seed, prompt_training_file,
 )
 from pykeen.cli.utils.cli_print_msg_helper import print_execution_mode_message, print_section_divider
 from pykeen.constants import EXECUTION_MODE, HPO_MODE, TRAINING_MODE, TRAINING_SET_PATH
+from .messages import print_intro, print_welcome_message
+from ..content import install_bio2bel_module
 
 __all__ = [
     'prompt_config',
@@ -38,7 +38,7 @@ def prompt_config(connection: str, rebuild: bool) -> Dict:
     print_section_divider()
 
     if is_biokeen_data_required:
-        database_name = select_database()
+        database_name = select_bio2bel_repository()
         config[TRAINING_SET_PATH] = install_bio2bel_module(name=database_name, connection=connection, rebuild=rebuild)
     else:
         prompt_training_file(config)
@@ -79,3 +79,26 @@ def prompt_config(connection: str, rebuild: bool) -> Dict:
     print_section_divider()
 
     return config
+
+
+def select_bio2bel_repository() -> str:
+    """Prompt the user for a Bio2BEL database."""
+    click.secho("Current Step: Please select the database you want to train on:", fg='blue')
+    for model, model_id in sorted(ID_TO_DATABASE_MAPPING.items()):
+        click.echo(f'{model}: {model_id}')
+
+    ids = list(ID_TO_DATABASE_MAPPING.keys())
+
+    while True:
+        user_input = click.prompt('> Please select one of the options', type=int)
+
+        if user_input in ID_TO_DATABASE_MAPPING:
+            return ID_TO_DATABASE_MAPPING[user_input]
+
+        elif user_input in ID_TO_DATABASE_MAPPING.values():
+            return user_input
+
+        click.echo(
+            f"Invalid input, please type in a number between 1 and {len(ID_TO_DATABASE_MAPPING)} indicating the "
+            f"database id.\nFor example, type {ids[0]} to select {ID_TO_DATABASE_MAPPING[ids[0]]} and press enter\n"
+        )
