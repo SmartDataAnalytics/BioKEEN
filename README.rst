@@ -41,7 +41,7 @@ To show BioKEEN's available commands, please run following command:
 
 Starting the Training/HPO Pipeline
 **********************************
-To configure an experiment, please run following command:
+To configure an experiment via the CLI, please run following command:
 
 .. code-block:: sh
 
@@ -67,7 +67,7 @@ To summarize the results of all experiments, please run following command:
 
 .. code-block:: sh
 
-    biokeen-summarize -d /path/to/experiments/directory -o /path/to/output/file.csv
+    biokeen summarize -d /path/to/experiments/directory -o /path/to/output/file.csv
 
 Getting Bio2BEL Data
 ********************
@@ -75,7 +75,7 @@ To download and structure the data from a `Bio2BEL <https://github.com/bio2bel>`
 
 .. code-block:: sh
 
-    biokeen get <name>
+    biokeen data get <name>
 
 Where ``<name>`` can be any repository name in Bio2BEL such as ``hippie``, ``mirtarbase``.
 
