@@ -19,6 +19,7 @@ If you use BioKEEN in your work, please cite [1]_:
    :name: start
 
    installation
+   run_biokeen
 
 .. toctree::
    :maxdepth: 2
