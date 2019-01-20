@@ -17,6 +17,7 @@ import os
 from typing import List, Optional, TextIO
 
 import click
+from click_default_group import DefaultGroup
 
 from bio2bel.constants import get_global_connection
 from biokeen.constants import DATA_DIR, iterate_source_paths
@@ -30,7 +31,7 @@ connection_option = click.option(
 )
 
 
-@click.group()
+@click.group(cls=DefaultGroup, default='train', default_if_no_args=True)
 @click.version_option()
 def main():  # noqa: D401
     """A command line interface for BioKEEN."""
@@ -40,15 +41,15 @@ def main():  # noqa: D401
 @connection_option
 @click.option('-f', '--config', type=click.File())
 @click.option('-r', '--rebuild', is_flag=True)
-def start(config: Optional[TextIO], connection: str, rebuild: bool):
+def train(config: Optional[TextIO], connection: str, rebuild: bool):
     """Start the BioKEEN training pipeline."""
     import pykeen
 
     if config is not None:
         config = json.load(config)
     else:
-        from .prompts import prompt_config
-        config = prompt_config(connection=connection, rebuild=rebuild)
+        from .prompts import prompt_biokeen_config
+        config = prompt_biokeen_config(connection=connection, rebuild=rebuild)
 
     pykeen.run(config)
 
