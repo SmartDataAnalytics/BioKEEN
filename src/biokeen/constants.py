@@ -3,6 +3,7 @@
 """Constants for BioKEEN."""
 
 import os
+from typing import Iterable
 
 import easy_config
 
@@ -26,6 +27,13 @@ biokeen_config = BiokeenConfig.load()
 
 DATA_DIR = biokeen_config.data
 os.makedirs(DATA_DIR, exist_ok=True)
+
+
+def iterate_source_paths() -> Iterable[str]:
+    """Iterate over the source paths."""
+    for file_name in os.listdir(DATA_DIR):
+        if 'keen.tsv' in file_name:
+            yield os.path.join(DATA_DIR, file_name)
 
 
 VERSION = '0.0.12-dev'

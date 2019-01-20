@@ -10,10 +10,10 @@ import click
 
 import pykeen
 from bio2bel.constants import get_global_connection
-from biokeen.build import iterate_source_paths
 from biokeen.cli_utils.bio_2_bel_utils import install_bio2bel_module
 from biokeen.cli_utils.prompt_utils import prompt_config
 from pykeen.predict import start_predictions_pipeline
+from biokeen.constants import DATA_DIR, iterate_source_paths
 
 connection_option = click.option(
     '-c',
