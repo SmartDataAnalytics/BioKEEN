@@ -59,8 +59,6 @@ def select_bio2bel_repository() -> Iterable[str]:
     for model, model_id in sorted(ID_TO_DATABASE_MAPPING.items()):
         click.echo(f'{model: >{number_width}}: {model_id}')
 
-    ids = list(ID_TO_DATABASE_MAPPING.keys())
-
     while True:
         try:
             user_input = click.prompt('> Please select one of the options', value_proc=process_selection)
