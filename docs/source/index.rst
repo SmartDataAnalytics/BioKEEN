@@ -1,7 +1,15 @@
 BioKEEN
 =======
-BioKEEN (Python KnowlEdge EmbeddiNgs) is wrapper around `PyKEEN <https://github.com/SmartDataAnalytics/PyKEEN>`_ for
-training and evaluating **biological** knowledge graph embeddings.
+BioKEEN (Biological KnowlEdge EmbeddiNgs) is a package for training and evaluating **biological** knowledge graph
+embeddings built on `PyKEEN <https://github.com/SmartDataAnalytics/PyKEEN>`_. Within BioKEEN several biomedical
+databases are directly accessible for training and evaluating biological knowledge graph embeddings
+(see :ref:`bio2bel_repositories`).
+
+Because we use PyKEEN as the core underlying framework, currently, implementations of 10
+knowledge graph emebddings models are avaialble for BioKEEN. Furthermore, it can be run in training mode in
+which users provide their own set of hyper-parameter values, or in hyper-parameter optimization mode to find suitable
+hyper-parameter values from set of user defined values. BioKEEN can also be run without having experience in programing
+by using its interactive command line interface that can be started with the command "biokeen" from a terminal.
 
 Installation is as easy as getting the code from `PyPI <https://pypi.python.org/pypi/biokeen>`_ with
 :code:`python3 -m pip install biokeen`.
@@ -19,7 +27,21 @@ If you use BioKEEN in your work, please cite [1]_:
    :name: start
 
    installation
-   run_biokeen
+   cli.train_and_evaluate
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Functionalities
+   :name: start
+
+   cli.train_and_evaluate
+   cli.inference
+   train_and_evaluate
+   hyper_parameter_optimization
+   inference
+   summarize
+
 
 .. toctree::
    :maxdepth: 2
