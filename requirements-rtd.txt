@@ -2,7 +2,7 @@ pybel
 bio2bel
 tqdm
 pandas
-pykeen
+pykeen>=0.0.19
 sphinx
 sphinx-rtd-theme
 sphinx-click
