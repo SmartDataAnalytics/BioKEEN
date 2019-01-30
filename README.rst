@@ -1,7 +1,7 @@
 BioKEEN |build| |coverage| |docs| |zenodo|
 ==========================================
 BioKEEN (Biological KnowlEdge EmbeddiNgs) is a package for training and evaluating biological knowledge graph
-embeddings built on `PyKEEN <https://github.com/SmartDataAnalytics/PyKEEN>`_.
+embeddings built on `PyKEEN <https://github.com/SmartDataAnalytics/PyKEEN>`_. A brief tutorial on how to get started with BioKEEN is available `here <https://vimeo.com/314252656>`_.
 
 Citation
 --------
@@ -28,8 +28,7 @@ Installation |pypi_version| |python_versions| |pypi_license|
 
 Usage
 -----
-Code examples can be found in the `notebooks directory
-<https://github.com/SmartDataAnalytics/BioKEEN/tree/master/notebooks>`_.
+Code examples can be found in the `notebooks directory <https://github.com/SmartDataAnalytics/BioKEEN/tree/master/notebooks>`_.
 
 CLI Usage
 ---------
