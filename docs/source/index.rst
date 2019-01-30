@@ -28,8 +28,6 @@ If you use BioKEEN in your work, please cite [1]_:
    :name: start
 
    installation
-   cli.train_and_evaluate
-
 
 .. toctree::
    :maxdepth: 2
@@ -40,14 +38,13 @@ If you use BioKEEN in your work, please cite [1]_:
    cli/inference
    cli/summarize
 
-
 .. toctree::
    :maxdepth: 2
    :caption: Running PyKEEN programmatically
    :name: prog
 
-    train_and_evaluate
-    hyper_parameter_optimization
+   train_and_evaluate
+   hyper_parameter_optimization
 
 .. toctree::
    :maxdepth: 2
