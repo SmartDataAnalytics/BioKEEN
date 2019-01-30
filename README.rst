@@ -9,7 +9,7 @@ A brief tutorial on how to get started with BioKEEN is available `here <https://
 
 .. image:: https://i.vimeocdn.com/video/755767182.jpg?mw=1100&mh=619&q=70
     :width: 300px
-    :ImageLink: https://vimeo.com/314252656
+    :target: https://vimeo.com/314252656
 
 Citation
 --------
