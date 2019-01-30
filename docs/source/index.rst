@@ -49,7 +49,7 @@ If you use BioKEEN in your work, please cite [1]_:
 .. toctree::
    :maxdepth: 2
    :caption: Biological Databases
-   :name: data
+   :name: bio2bel_repositories
 
    bio2bel_repositories
 
