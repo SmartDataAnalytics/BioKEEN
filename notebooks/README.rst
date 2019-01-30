@@ -15,6 +15,7 @@ Link Prediction
 ~~~~~~~~~~~~~~~
 1. Case Scenario applied to the ComPath dataset.
 2. Case Scenario applied to the ADEPTUS dataset.
+3. Case Scenario applied to the HSDN dataset.
 
 Entity Disambiguation
 ---------------------
