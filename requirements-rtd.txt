@@ -1,0 +1,8 @@
+pybel
+bio2bel
+tqdm
+pandas
+pykeen
+sphinx
+sphinx-rtd-theme
+sphinx-click

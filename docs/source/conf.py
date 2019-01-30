@@ -17,7 +17,7 @@ import re
 import sys
 
 # -- Mockup PyTorch to exclude it while compiling the docs--------------------------------------------------------------
-autodoc_mock_imports = ['torch', 'numpy', 'scipy', 'torchvision', 'scikit-learn',]
+autodoc_mock_imports = ['pykeen']
 
 sys.path.insert(0, os.path.abspath('../../src'))
 

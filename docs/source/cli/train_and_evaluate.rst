@@ -40,7 +40,7 @@ Step 9: Specify whether to evaluate the model
 .. image:: ../images/epochs.png
 
 Step 10: Specify whether to evaluate the model
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. image:: ../images/epochs.png
 
 Step 11: Provide a random seed

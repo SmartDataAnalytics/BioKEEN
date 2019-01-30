@@ -1,8 +1,6 @@
 Train and Evaluate
 ==================
-
 Here, we explain how to define and run experiments programmatically. This should be done using PyKEEN.
-
 
 Configure your experiment
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,7 +24,6 @@ To programmatically train (and evaluate) a KGE model, a python dictionary must b
         random_seed                 = 2,
         preferred_device            = 'cpu',
     )
-
 
 Run your experiment
 ~~~~~~~~~~~~~~~~~~~
@@ -53,15 +50,13 @@ Access trained KGE model
     results.results['trained_model']
 
 Access the losses
-~~~~~~~~~~~~~~~~~~
-
+~~~~~~~~~~~~~~~~~
 .. code-block:: python
 
     results.results['losses']
 
 Access evaluation results
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-
 .. code-block:: python
 
     results.results['eval_summary']
