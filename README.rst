@@ -5,7 +5,7 @@ embeddings built on `PyKEEN <https://github.com/SmartDataAnalytics/PyKEEN>`_.
 
 Because we use PyKEEN as the underlying software package, implementations of 10 knowledge graph emebddings models are currently avaialble for BioKEEN. Furthermore, BioKEEN can be run in *training mode* in which users provide their own set of hyper-parameter values, or in *hyper-parameter optimization mode* to find suitable hyper-parameter values from set of user defined values.
 
-Through the integration of the `Bio2BEL <https://github.com/bio2bel>`_ software numerous biomedical databases are directly accesible within BioKEEN.
+Through the integration of the `Bio2BEL <https://github.com/bio2bel>`_ software numerous biomedical databases are directly accessible within BioKEEN.
 
 BioKEEN can also be run without having experience in programing by using its interactive command line interface that can be started with the command “biokeen” from a terminal.
 
