@@ -87,11 +87,13 @@ def clear():
 @click.argument('names', nargs=-1)
 @connection_option
 @click.option('-r', '--rebuild', is_flag=True)
-@click.option('-v', '--verbose', is_flag=True)
+@click.option('-v', '--verbose', count=True)
 def get(names: List[str], connection: str, rebuild: bool, verbose: bool):
     """Install, populate, and build Bio2BEL repository."""
-    if verbose:
+    if verbose == 1:
         logging.basicConfig(level=logging.INFO)
+    elif verbose == 2:
+        logging.basicConfig(level=logging.DEBUG)
 
     from biokeen.content import install_bio2bel_module
 
