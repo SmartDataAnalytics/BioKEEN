@@ -54,30 +54,30 @@ class TypedConverter(Converter):
         )
 
 
-class SimpleTypedPredicate(Converter):
+class SimplePredicate(Converter):
+    """Converts BEL statements based on a given relation."""
+
+    relation = ...
+
+    @classmethod
+    def predicate(cls, u, v, key, edge_data) -> bool:
+        """Test a BEL edge has a given relation."""
+        return edge_data[RELATION] == cls.relation
+
+
+class SimpleTypedPredicate(SimplePredicate):
     """Finds BEL statements like ``A(X) B C(Y)`` where relation B and types A and C are defined in the class."""
 
     subject_type = ...
-    relation = ...
     object_type = ...
 
     @classmethod
-    def predicate(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: Dict):
+    def predicate(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: Dict) -> bool:
         """Test a BEL edge."""
-        return (
+        return super().predicate(u, v, key, edge_data) and (
             isinstance(u, cls.subject_type) and
-            edge_data[RELATION] == cls.relation and
             isinstance(v, cls.object_type)
         )
-
-
-class _ConvertOnRelation(Converter):
-    relation = ...
-
-    @classmethod
-    def predicate(cls, u, v, key, edge_data):
-        """Test a BEL edge has a given relation."""
-        return edge_data[RELATION] == cls.relation
 
 
 class _PartOfConverter(SimpleTypedPredicate, TypedConverter):
@@ -129,14 +129,14 @@ class TranscriptionConverter(TypedConverter):
 '''
 
 
-class IsAConverter(_ConvertOnRelation):
+class IsAConverter(SimplePredicate, SimpleConverter):
     """Converts BEL statements like ``X isA Y``."""
 
     relation = IS_A
     target_relation = 'isA'
 
 
-class EquivalenceConverter(_ConvertOnRelation):
+class EquivalenceConverter(SimplePredicate, SimpleConverter):
     """Converts BEL statements like ``X eq Y``."""
 
     relation = EQUIVALENT_TO

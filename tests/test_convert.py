@@ -5,17 +5,10 @@
 import unittest
 from typing import Tuple, Type
 
-from biokeen.convert import get_triple
-from biokeen.convert.converters import (
-    AssociationConverter, Converter, CorrelationConverter, DecreasesAmountConverter, DrugIndicationConverter,
-    DrugSideEffectConverter, IncreasesAmountConverter, MiRNADecreasesExpressionConverter,
-    NamedComplexHasComponentConverter, PartOfBiologicalProcess, PartOfNamedComplexConverter, RegulatesActivityConverter,
-    RegulatesAmountConverter,
-)
 from pybel import BELGraph
 from pybel.constants import (
-    ASSOCIATION, DECREASES, HAS_COMPONENT, INCREASES, NEGATIVE_CORRELATION, OBJECT, PART_OF, POSITIVE_CORRELATION,
-    REGULATES, RELATION,
+    ASSOCIATION, DECREASES, EQUIVALENT_TO, HAS_COMPONENT, INCREASES, IS_A, NEGATIVE_CORRELATION, OBJECT, PART_OF,
+    POSITIVE_CORRELATION, REGULATES, RELATION,
 )
 from pybel.dsl import (
     Abundance, BaseEntity, BiologicalProcess, MicroRna, NamedComplexAbundance, Pathology, Protein,
@@ -23,6 +16,14 @@ from pybel.dsl import (
 )
 from pybel.testing.utils import n
 from pybel.typing import EdgeData
+
+from biokeen.convert import get_triple
+from biokeen.convert.converters import (
+    AssociationConverter, Converter, CorrelationConverter, DecreasesAmountConverter, DrugIndicationConverter,
+    DrugSideEffectConverter, EquivalenceConverter, IncreasesAmountConverter, IsAConverter,
+    MiRNADecreasesExpressionConverter, NamedComplexHasComponentConverter, PartOfBiologicalProcess,
+    PartOfNamedComplexConverter, RegulatesActivityConverter, RegulatesAmountConverter,
+)
 
 
 def _rel(x):
@@ -39,6 +40,7 @@ def _assoc(y):
 
 a1 = Abundance('CHEBI', '1')
 p1 = Protein('HGNC', '1')
+pf1 = Protein('INTERPRO', '1')
 d1 = Pathology('MESH', '1')
 b1 = BiologicalProcess('GO', '1')
 b2 = BiologicalProcess('GO', '2')
@@ -54,6 +56,7 @@ converters_true_list = [
     (AssociationConverter, r1, r2, _rel(ASSOCIATION), ('HGNC:1', 'association', 'HGNC:2')),
     (AssociationConverter, r1, r2, _assoc('similarity'), ('HGNC:1', 'similarity', 'HGNC:2')),
     (CorrelationConverter, r1, r2, _rel(POSITIVE_CORRELATION), ('HGNC:1', 'positiveCorrelation', 'HGNC:2')),
+    (IsAConverter, p1, pf1, _rel(IS_A), ('HGNC:1', 'isA', 'INTERPRO:1')),
     # Found in ADEPTUS
     (CorrelationConverter, d1, r1, _rel(POSITIVE_CORRELATION), ('MESH:1', 'positiveCorrelation', 'HGNC:1')),
     (CorrelationConverter, d1, r1, _rel(NEGATIVE_CORRELATION), ('MESH:1', 'negativeCorrelation', 'HGNC:1')),
@@ -67,9 +70,12 @@ converters_true_list = [
     # Found in miRTarBase
     (MiRNADecreasesExpressionConverter, m1, r1, _rel(DECREASES), ('MIRBASE:1', 'repressesExpressionOf', 'HGNC:1')),
     # Found in DrugBank
-    (RegulatesActivityConverter, a1, p1, _rela(REGULATES), ('CHEBI:1', 'activityDirectlyRegulatesActivityOf', 'HGNC:1'))
+    (RegulatesActivityConverter, a1, p1, _rela(REGULATES), ('CHEBI:1', 'activityDirectlyRegulatesActivityOf',
+                                                            'HGNC:1')),
+    # Found in ComPath
+    (EquivalenceConverter, b1, b2, _rel(EQUIVALENT_TO), ('GO:1', 'equivalentTo', 'GO:2')),
+    (PartOfBiologicalProcess, b1, b2, _rel(PART_OF), ('GO:1', 'partOf', 'GO:2')),
     # Found in HSDN
-    # 
 ]
 
 converters_false_list = [
