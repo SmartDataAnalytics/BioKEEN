@@ -31,19 +31,19 @@ If you find BioKEEN useful in your work, please consider citing:
 
 Installation |pypi_version| |python_versions| |pypi_license|
 ------------------------------------------------------------
-1. ``biokeen`` can be installed with the following commands:
+``biokeen`` can be installed on any system running Python 3.6+  with the following commands:
 
 .. code-block:: sh
 
-    python3 -m pip install git+https://github.com/SmartDataAnalytics/BioKEEN.git@master
+    $ pip install git+https://github.com/SmartDataAnalytics/BioKEEN.git
 
-2. or in editable mode with:
+Alternatively, it can be installed from the source for development with:
 
 .. code-block:: sh
 
     $ git clone https://github.com/SmartDataAnalytics/BioKEEN.git biokeen
     $ cd biokeen
-    $ python3 -m pip install -e .
+    $ pip install -e .
 
 Usage
 -----

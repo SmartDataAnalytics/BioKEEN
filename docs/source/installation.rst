@@ -1,5 +1,8 @@
-Installation |pypi_version| |python_versions| |pypi_license|
-============================================================
+Installation
+============
+There are several ways to download and install BioKEEN.
+
+.. warning:: BioKEEN requires Python 3.6+
 
 Easiest
 ~~~~~~~
@@ -7,7 +10,7 @@ Download the latest stable code from `PyPI <https://pypi.python.org/pypi/biokeen
 
 .. code-block:: sh
 
-   $ python3 -m pip install biokeen
+   $ pip install biokeen
 
 Get the Latest
 ~~~~~~~~~~~~~~~
@@ -15,11 +18,4 @@ Download the most recent code from `GitHub <https://github.com/SmartDataAnalytic
 
 .. code-block:: sh
 
-   $ python3 -m pip install git+https://github.com/SmartDataAnalytics/BioKEEN.git
-
-.. |python_versions| image:: https://img.shields.io/pypi/pyversions/biokeen.svg
-    :alt: Stable Supported Python Versions
-.. |pypi_version| image:: https://img.shields.io/pypi/v/biokeen.svg
-    :alt: Current version on PyPI
-.. |pypi_license| image:: https://img.shields.io/pypi/l/biokeen.svg
-    :alt: MIT License
+   $ pip install git+https://github.com/SmartDataAnalytics/BioKEEN.git
