@@ -12,7 +12,7 @@ Through the integration of the `Bio2BEL <https://github.com/bio2bel>`_ software 
 directly accessible within BioKEEN.
 
 BioKEEN can also be run without having experience in programing by using its interactive command line interface that can
- be started with the command “biokeen” from a terminal.
+be started with the command “biokeen” from a terminal.
 
 Tutorial
 --------
