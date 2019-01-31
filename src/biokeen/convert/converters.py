@@ -30,7 +30,7 @@ class SimpleConverter(Converter):
     """A class for converting the source and target that have simple names."""
 
     @classmethod
-    def convert(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: Dict):
+    def convert(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: Dict) -> Tuple[str, str, str]:
         """Convert a BEL edge."""
         return (
             f'{u.namespace}:{u.identifier or u.name}',
@@ -45,7 +45,7 @@ class TypedConverter(Converter):
     target_relation = None
 
     @classmethod
-    def convert(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: Dict):
+    def convert(cls, u: BaseEntity, v: BaseEntity, key: str, edge_data: Dict) -> Tuple[str, str, str]:
         """Convert a BEL edge."""
         return (
             f'{u.namespace}:{u.identifier or u.name}',
@@ -108,7 +108,7 @@ class NamedComplexHasComponentConverter(SimpleTypedPredicate):
     target_relation = 'partOf'
 
     @classmethod
-    def convert(cls, u: BaseEntity, v: BaseEntity, key: str, data: Dict):
+    def convert(cls, u: BaseEntity, v: BaseEntity, key: str, data: Dict) -> Tuple[str, str, str]:
         """Convert a BEL edge."""
         return (
             f'{v.namespace}:{v.identifier or v.name}',
