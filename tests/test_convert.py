@@ -97,7 +97,7 @@ class TestConverters(unittest.TestCase):
         self.assertEqual(
             triple,
             converter.convert(u, v, key, edge_data),
-            msg='Conversion failed: {converter.__name__}',
+            msg=f'Conversion failed: {converter.__name__}',
         )
         graph = BELGraph()
         graph.add_edge(u, v, key=key, **edge_data)
