@@ -2,6 +2,7 @@ BioKEEN |build| |coverage| |docs| |zenodo|
 ==========================================
 BioKEEN (Biological KnowlEdge EmbeddiNgs) is a package for training and evaluating biological knowledge graph
 embeddings built on `PyKEEN <https://github.com/SmartDataAnalytics/PyKEEN>`_.
+Because we use PyKEEN as the underlying software package, implementations of 10 knowledge graph emebddings models are currently avaialble for BioKEEN. Furthermore, BioKEEN can be run in *training mode* in which users provide their own set of hyper-parameter values, or in *hyper-parameter optimization mode* to find suitable hyper-parameter values from set of user defined values. BioKEEN can also be run without having experience in programing by using its interactive command line interface that can be started with the command “biokeen” from a terminal.
 
 Tutorial
 --------
