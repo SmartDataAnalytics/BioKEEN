@@ -57,7 +57,7 @@ To show BioKEEN's available commands, please run following command:
 
     biokeen
 
-Starting the Training/HPO Pipeline - Set Up your Experiment withn 60 seconds
+Starting the Training/HPO Pipeline - Set Up Your Experiment withn 60 seconds
 ****************************************************************************
 To configure an experiment via the CLI, please run following command:
 
