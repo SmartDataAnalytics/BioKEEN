@@ -57,6 +57,6 @@ Step 13: Specify the path to the output directory
 
 Reference
 ---------
-.. click:: biokeen.cli.cli:train
+.. click:: biokeen.cli.cli:start
    :prog: biokeen
    :show-nested:
