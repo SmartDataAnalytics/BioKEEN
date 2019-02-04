@@ -36,7 +36,7 @@ def iterate_source_paths() -> Iterable[str]:
             yield os.path.join(DATA_DIR, file_name)
 
 
-VERSION = '0.0.12'
+VERSION = '0.0.13-dev'
 CONFIG_PATH = os.path.join(DATA_DIR, "configuration.json")
 
 EMOJI = '🍩'
