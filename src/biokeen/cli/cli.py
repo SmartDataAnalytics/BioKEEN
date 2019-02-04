@@ -31,7 +31,7 @@ connection_option = click.option(
 )
 
 
-@click.group(cls=DefaultGroup, default='train', default_if_no_args=True)
+@click.group(cls=DefaultGroup, default_if_no_args=False)
 @click.version_option()
 def main():  # noqa: D401
     """A command line interface for BioKEEN."""
@@ -41,7 +41,7 @@ def main():  # noqa: D401
 @connection_option
 @click.option('-f', '--config', type=click.File())
 @click.option('-r', '--rebuild', is_flag=True)
-def train(config: Optional[TextIO], connection: str, rebuild: bool):
+def start(config: Optional[TextIO], connection: str, rebuild: bool):
     """Start the BioKEEN training pipeline."""
     import pykeen
 
