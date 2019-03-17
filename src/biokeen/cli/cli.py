@@ -42,7 +42,8 @@ def main():  # noqa: D401
 @connection_option
 @click.option('-f', '--config', type=click.File())
 @click.option('-r', '--rebuild', is_flag=True)
-def start(config: Optional[TextIO], connection: str, rebuild: bool):
+@click.option('-x', '--no-prompt-bio2bel', is_flag=True)
+def start(config: Optional[TextIO], connection: str, rebuild: bool, no_prompt_bio2bel: bool):
     """Start the BioKEEN training pipeline."""
     import pykeen
 
@@ -50,7 +51,11 @@ def start(config: Optional[TextIO], connection: str, rebuild: bool):
         config = json.load(config)
     else:
         from .prompts import prompt_biokeen_config
-        config = prompt_biokeen_config(connection=connection, rebuild=rebuild)
+        config = prompt_biokeen_config(
+            connection=connection,
+            rebuild=rebuild,
+            do_prompt_bio2bel=(not no_prompt_bio2bel),
+        )
 
     config['pykeen-version'] = PYKEEN_VERSION
     config['biokeen-version'] = VERSION

@@ -2,16 +2,17 @@
 
 """Prompts for the BioKEEN command line interface."""
 
+import re
 from collections import OrderedDict
-from typing import Dict, Iterable
+from typing import Dict, Iterable, Optional
 
 import click
 
-from biokeen.constants import ID_TO_DATABASE_MAPPING
 from pykeen.cli.prompt import prompt_config
 from pykeen.cli.utils.cli_print_msg_helper import print_section_divider
 from pykeen.constants import TRAINING_SET_PATH
 from .messages import print_intro, print_welcome_message
+from ..constants import ID_TO_DATABASE_MAPPING
 from ..content import install_bio2bel_module
 
 __all__ = [
@@ -19,7 +20,7 @@ __all__ = [
 ]
 
 
-def prompt_biokeen_config(*, connection: str, rebuild: bool) -> Dict:
+def prompt_biokeen_config(*, connection: str, rebuild: bool, do_prompt_bio2bel: Optional[bool] = None) -> Dict:
     """Configure experiments."""
     config = OrderedDict()
 
@@ -30,8 +31,9 @@ def prompt_biokeen_config(*, connection: str, rebuild: bool) -> Dict:
     print_section_divider()
 
     # Step 2: Ask for data source
-    do_prompt_bio2bel = click.confirm('Do you want to use one of the databases provided by BioKEEN?', default=True)
-    print_section_divider()
+    if do_prompt_bio2bel is None:
+        do_prompt_bio2bel = click.confirm('Do you want to use one of the databases provided by BioKEEN?', default=True)
+        print_section_divider()
 
     do_prompt_training = True
 
@@ -53,7 +55,7 @@ def prompt_biokeen_config(*, connection: str, rebuild: bool) -> Dict:
 
 def select_bio2bel_repository() -> Iterable[str]:
     """Prompt the user for a Bio2BEL database."""
-    click.secho("Current Step: Please select the database you want to train on:", fg='blue')
+    click.secho("Current Step: Please select the database(s) you want to train on:", fg='blue')
 
     number_width = 1 + round(len(ID_TO_DATABASE_MAPPING) / 10)
     for model, model_id in sorted(ID_TO_DATABASE_MAPPING.items()):
@@ -69,7 +71,11 @@ def select_bio2bel_repository() -> Iterable[str]:
 
 
 def process_selection(values: str) -> Iterable[str]:
-    for value in values.split(' '):
+    for value in re.split(r'\s|,', values):
+        value = value.strip()
+        if not value:
+            continue
+
         try:
             value = int(value)
         except ValueError:
