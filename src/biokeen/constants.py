@@ -8,6 +8,7 @@ from typing import Iterable
 import easy_config
 
 HERE = os.path.abspath(os.path.dirname(__file__))
+HOME = os.path.expanduser('~')
 
 
 class BiokeenConfig(easy_config.EasyConfig):
@@ -15,8 +16,8 @@ class BiokeenConfig(easy_config.EasyConfig):
 
     NAME = 'biokeen'
     FILES = [
-        os.path.join(os.path.expanduser('~'), '.config', 'biokeen.cfg'),
-        os.path.join(os.path.expanduser('~'), '.config', 'config.ini'),
+        os.path.join(HOME, '.config', 'biokeen.cfg'),
+        os.path.join(HOME, '.config', 'config.ini'),
     ]
 
     #: the data directory where TSVs get exported
@@ -37,7 +38,6 @@ def iterate_source_paths() -> Iterable[str]:
 
 
 VERSION = '0.0.13-dev'
-CONFIG_PATH = os.path.join(DATA_DIR, "configuration.json")
 
 EMOJI = '🍩'
 
