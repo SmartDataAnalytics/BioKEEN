@@ -20,7 +20,8 @@ import click
 from click_default_group import DefaultGroup
 
 from bio2bel.constants import get_global_connection
-from biokeen.constants import DATA_DIR, iterate_source_paths
+from biokeen.constants import DATA_DIR, VERSION, iterate_source_paths
+from pykeen.constants import VERSION as PYKEEN_VERSION
 
 connection_option = click.option(
     '-c',
@@ -51,6 +52,8 @@ def start(config: Optional[TextIO], connection: str, rebuild: bool):
         from .prompts import prompt_biokeen_config
         config = prompt_biokeen_config(connection=connection, rebuild=rebuild)
 
+    config['pykeen-version'] = PYKEEN_VERSION
+    config['biokeen-version'] = VERSION
     pykeen.run(config)
 
 
