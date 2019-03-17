@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
 
-"""Tests for the conversion procedure"""
+"""Tests for the conversion procedure."""
 
 import unittest
 from typing import Tuple, Type
 
+from biokeen.convert import get_triple
+from biokeen.convert.converters import (
+    AssociationConverter, Converter, CorrelationConverter, DecreasesAmountConverter, DrugIndicationConverter,
+    DrugSideEffectConverter, EquivalenceConverter, IncreasesAmountConverter, IsAConverter,
+    MiRNADecreasesExpressionConverter, NamedComplexHasComponentConverter, PartOfBiologicalProcess,
+    PartOfNamedComplexConverter, RegulatesActivityConverter, RegulatesAmountConverter,
+)
 from pybel import BELGraph
 from pybel.constants import (
     ASSOCIATION, DECREASES, EQUIVALENT_TO, HAS_COMPONENT, INCREASES, IS_A, NEGATIVE_CORRELATION, OBJECT, PART_OF,
@@ -16,14 +23,6 @@ from pybel.dsl import (
 )
 from pybel.testing.utils import n
 from pybel.typing import EdgeData
-
-from biokeen.convert import get_triple
-from biokeen.convert.converters import (
-    AssociationConverter, Converter, CorrelationConverter, DecreasesAmountConverter, DrugIndicationConverter,
-    DrugSideEffectConverter, EquivalenceConverter, IncreasesAmountConverter, IsAConverter,
-    MiRNADecreasesExpressionConverter, NamedComplexHasComponentConverter, PartOfBiologicalProcess,
-    PartOfNamedComplexConverter, RegulatesActivityConverter, RegulatesAmountConverter,
-)
 
 
 def _rel(x):
@@ -94,6 +93,7 @@ class TestConverters(unittest.TestCase):
                           edge_data: EdgeData,
                           triple: Tuple[str, str, str],
                           ) -> None:
+        """Test a converter class."""
         self.assertTrue(issubclass(converter, Converter), msg=f'Not a Converter: {converter.__name__}')
         key = n()
         self.assertTrue(
