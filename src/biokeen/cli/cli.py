@@ -58,8 +58,8 @@ def start(config: Optional[TextIO], connection: str, rebuild: bool):
 
 
 @main.command()
-@click.option('-m', '--model-directory', type=click.Path(file_okay=False, dir_okay=True))
-@click.option('-d', '--data-directory', type=click.Path(file_okay=False, dir_okay=True))
+@click.option('-m', '--model-directory', type=click.Path(file_okay=False, dir_okay=True, exists=True), required=True)
+@click.option('-d', '--data-directory', type=click.Path(file_okay=False, dir_okay=True, exists=True), required=True)
 def predict(model_directory: str, data_directory: str):
     """Use a trained model to make predictions."""
     from pykeen.predict import start_predictions_pipeline
