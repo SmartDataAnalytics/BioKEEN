@@ -54,6 +54,7 @@ DRUGBANK_NAME = 'drugbank'
 ADEPTUS_NAME = 'adeptus'
 HSDN_NAME = 'hsdn'
 INTERPRO_NAME = 'interpro'
+DDR_NAME = 'ddr'
 
 # ToDo: Add databases
 DATABASES = [
@@ -69,6 +70,7 @@ DATABASES = [
     ADEPTUS_NAME,
     HSDN_NAME,
     INTERPRO_NAME,
+    DDR_NAME,
 ]
 
 ID_TO_DATABASE_MAPPING = dict(enumerate(DATABASES, start=1))
