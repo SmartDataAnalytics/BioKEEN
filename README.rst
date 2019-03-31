@@ -29,6 +29,8 @@ If you find BioKEEN useful in your work, please consider citing:
 .. [1] Ali, M., *et al.* (2019). `BioKEEN: A library for learning and evaluating biological knowledge graph embeddings
        <https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btz117/5320556>`_. *Bioinformatics* , btz117.
 
+**Note: ComPath has been updated, we will soon link the dataset that we used for the experiments reported in the paper.**
+
 Installation |pypi_version| |python_versions| |pypi_license|
 ------------------------------------------------------------
 ``biokeen`` can be installed on any system running Python 3.6+  with the following commands:
