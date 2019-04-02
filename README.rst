@@ -16,7 +16,7 @@ be started with the command “biokeen” from a terminal.
 
 Share Your Experimental Artifacts
 ---------------------------------
-You can share you trained KGE model along the other experimental artifacts through the `KEEN-Model-Zoo <https://github.com/SmartDataAnalytics/KEEN-Model-Zoo>`_.
+You can share you trained KGE models along the other experimental artifacts through the `KEEN-Model-Zoo <https://github.com/SmartDataAnalytics/KEEN-Model-Zoo>`_.
 
 Tutorial
 --------
