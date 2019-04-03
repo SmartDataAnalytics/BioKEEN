@@ -92,6 +92,28 @@ To make prediction based on a trained model, please run following command:
 
     biokeen predict -m /path/to/model/directory -d /path/to/data/directory
 
+where the value for the argument **-m** is the directory containing the model, in more detail following files must be
+contained in the directory:
+
+* configuration.json
+* entities_to_embeddings.json
+* relations_to_embeddings.json
+* trained_model.pkl
+
+These files are created automatically created after model is trained (and evaluated) and exported in your
+specified output directory.
+
+The value for the argument **-d** is the directory containing the data for which inference should be applied, and it
+needs to contain following files:
+
+* entities.tsv
+* relations.tsv
+
+where *entities.tsv* contains all entities of interest, and relations.tsv all relations. Both files should contain
+should contain a single column containing all the entities/relations. Based on these files, PyKEEN will create all
+triple permutations, and computes the predictions for them, and saves them in data directory
+in *predictions.tsv*.
+
 Summarize the Results of All Experiments
 ****************************************
 To summarize the results of all experiments, please run following command:
