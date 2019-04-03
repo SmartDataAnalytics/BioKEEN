@@ -27,6 +27,8 @@ A brief tutorial on how to get started with BioKEEN is available `here <https://
     :target: https://vimeo.com/314252656
 
 
+<br/>
+
 Further tutorials are can be found in the `notebooks directory <https://github.com/SmartDataAnalytics/BioKEEN/tree/master/notebooks>`_ and in our `Documentation <https://biokeen.readthedocs.io/en/latest/>`_.
 
 Citation
