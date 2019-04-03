@@ -18,13 +18,15 @@ Share Your Experimental Artifacts
 ---------------------------------
 You can share you trained KGE models along the other experimental artifacts through the `KEEN-Model-Zoo <https://github.com/SmartDataAnalytics/KEEN-Model-Zoo>`_.
 
-Tutorial
---------
+Tutorials
+---------
 A brief tutorial on how to get started with BioKEEN is available `here <https://vimeo.com/314252656>`_.
 
 .. image:: https://i.vimeocdn.com/video/755767182.jpg?mw=1100&mh=619&q=70
     :width: 300px
     :target: https://vimeo.com/314252656
+    
+Further tutorials are can be found in the `notebooks directory <https://github.com/SmartDataAnalytics/BioKEEN/tree/master/notebooks>`_ and in our `Documentation <https://biokeen.readthedocs.io/en/latest/>`_.
 
 Citation
 --------
@@ -54,9 +56,6 @@ Alternatively, it can be installed from the source for development with:
     $ cd biokeen
     $ pip install -e .
 
-Usage
------
-Code examples can be found in the `notebooks directory <https://github.com/SmartDataAnalytics/BioKEEN/tree/master/notebooks>`_.
 
 CLI Usage
 ---------
