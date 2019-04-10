@@ -32,7 +32,15 @@ logger = logging.getLogger(__name__)
 
 
 def to_pykeen_path(df: pd.DataFrame, path: str) -> bool:
-    """Write the relationships in the BEL graph to a KEEN TSV file."""
+    """Write the relationships in the BEL graph to a KEEN TSV file.
+
+    If you have a BEL graph, first do:
+
+    >>> from biokeen.convert import to_pykeen_df, to_pykeen_path
+    >>> graph = ...  # Something from PyBEL
+    >>> df = to_pykeen_df(graph)
+    >>> to_pykeen_path(df, 'graph.keen.tsv')
+    """
     if len(df.index) == 0:
         return False
     df.to_csv(path, sep='\t', index=None, header=None)

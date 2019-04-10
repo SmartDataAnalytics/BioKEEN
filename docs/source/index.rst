@@ -14,7 +14,6 @@ by using its interactive command line interface that can be started with the com
 Installation is as easy as getting the code from `PyPI <https://pypi.python.org/pypi/biokeen>`_ with
 :code:`python3 -m pip install biokeen`.
 
-
 Citation
 --------
 If you use BioKEEN in your work, please cite [1]_:
@@ -45,6 +44,14 @@ If you use BioKEEN in your work, please cite [1]_:
 
    train_and_evaluate
    hyper_parameter_optimization
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Reference
+   :name: reference
+
+   convert
 
 .. toctree::
    :maxdepth: 2
