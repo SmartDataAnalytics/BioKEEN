@@ -47,7 +47,7 @@ If you find BioKEEN useful in your work, please consider citing:
 
 Installation |pypi_version| |python_versions| |pypi_license|
 ------------------------------------------------------------
-To install biokeen, Python 3.6+ is required, and we recommend to install it on Linux or Mac OS systems. Please run following command
+To install biokeen, Python 3.6+ is required, and we recommend to install it on Linux or Mac OS systems. Please run following command:
 
 .. code-block:: sh
 
