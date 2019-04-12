@@ -62,6 +62,11 @@ Alternatively, it can be installed from the source for development with:
     $ cd biokeen
     $ pip install -e .
 
+Contributing
+------------
+Contributions, whether filing an issue, making a pull request, or forking, are appreciated.
+See `CONTRIBUTING.rst <https://github.com/SmartDataAnalytics/BioKEEN/blob/master/CONTRIBUTING.rst>`_ for more
+information on getting involved.
 
 CLI Usage
 ---------
