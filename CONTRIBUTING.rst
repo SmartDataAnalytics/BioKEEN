@@ -1,6 +1,6 @@
 Contributing
 ============
-BioKEEN is part of the KEEN Universe with which we aim to make knwoledge graph embedding
+BioKEEN is part of the KEEN Universe with which we aim to make knowledge graph embedding
 research reproducible and transferable to other domains. Contributions, whether big or small, are appreciated!
 You can get involved by submitting an issue, making a suggestion, or adding code to the project.
 
