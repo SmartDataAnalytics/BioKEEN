@@ -14,6 +14,11 @@ directly accessible within BioKEEN.
 BioKEEN can also be run without having experience in programing by using its interactive command line interface that can
 be started with the command “biokeen” from a terminal.
 
+
+News:
+-----
+Some of the databases are currently not accessible, we will fix the `issues <https://github.com/SmartDataAnalytics/BioKEEN/issues>`_ as fast as possible.
+
 Share Your Experimental Artifacts
 ---------------------------------
 You can share you trained KGE models along the other experimental artifacts through the `KEEN-Model-Zoo <https://github.com/SmartDataAnalytics/KEEN-Model-Zoo>`_.
