@@ -153,3 +153,5 @@ data/relations_to_embeddings.pkl
 data/losses.json
 data/evaluation_summary.json
 /data/
+/data_local/
+/data_local/*
