@@ -99,7 +99,7 @@ def ensure_bio2bel_installation(package: str):
         from pip._internal import main as pip_main
 
         with redirect_stdout(sys.stderr):
-            pip_exit_code = pip_main(['install', '--user', package])
+            pip_exit_code = pip_main(['install', package])
 
         if 0 != pip_exit_code:  # command failed
             logger.warning(f'{EMOJI} could not find {package} on PyPI. Try installing from GitHub with:')
