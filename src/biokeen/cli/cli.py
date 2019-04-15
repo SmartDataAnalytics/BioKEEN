@@ -20,7 +20,7 @@ import click
 from click_default_group import DefaultGroup
 
 from bio2bel.constants import get_global_connection
-from biokeen.constants import DATA_DIR, VERSION, iterate_source_paths
+from biokeen.constants import VERSION, biokeen_config
 from pykeen.constants import VERSION as PYKEEN_VERSION
 
 connection_option = click.option(
@@ -76,10 +76,10 @@ def data():
     """Commands for data acquisition."""
 
 
-@data.command(help=f'Data stored in {DATA_DIR}')
+@data.command(help=f'Data stored in {biokeen_config.data_directory}')
 def ls():
     """List built data."""
-    for path in iterate_source_paths():
+    for path in biokeen_config.iterate_source_paths():
         click.echo(path)
 
 
@@ -87,7 +87,7 @@ def ls():
 @click.confirmation_option()
 def clear():
     """Remove all built data."""
-    for path in iterate_source_paths():
+    for path in biokeen_config.iterate_source_paths():
         os.remove(path)
 
 

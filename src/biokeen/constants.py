@@ -21,24 +21,22 @@ class BiokeenConfig(easy_config.EasyConfig):
     ]
 
     #: the data directory where TSVs get exported
-    data: str = os.path.abspath(os.path.join(HERE, os.pardir, os.pardir, 'data'))
+    data_directory: str = os.path.abspath(os.path.join(HOME, '.keen', 'biokeen'))
+
+    #: The file extension of pre-processed Bio2BEL databases
+    keen_tsv_ext: str = 'keen.tsv'
+
+    def iterate_source_paths(self) -> Iterable[str]:
+        """Iterate over the source paths."""
+        for file_name in os.listdir(self.data_directory):
+            if file_name.endswith(self.keen_tsv_ext):
+                yield os.path.join(self.data_directory, file_name)
 
 
 biokeen_config = BiokeenConfig.load()
-
-DATA_DIR = biokeen_config.data
-os.makedirs(DATA_DIR, exist_ok=True)
-
-
-def iterate_source_paths() -> Iterable[str]:
-    """Iterate over the source paths."""
-    for file_name in os.listdir(DATA_DIR):
-        if 'keen.tsv' in file_name:
-            yield os.path.join(DATA_DIR, file_name)
-
+os.makedirs(biokeen_config.data_directory, exist_ok=True)
 
 VERSION = '0.0.13-dev'
-
 EMOJI = '🍩'
 
 # Available databases

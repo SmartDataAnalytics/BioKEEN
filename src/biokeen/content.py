@@ -15,7 +15,7 @@ import pkg_resources
 from bio2bel import AbstractManager
 from bio2bel.manager.bel_manager import BELManagerMixin
 from pybel import from_json_path, to_json_path
-from .constants import DATA_DIR, EMOJI
+from .constants import EMOJI, biokeen_config
 from .convert import to_pykeen_df, to_pykeen_path, to_pykeen_summary_path
 
 _SPECIAL_CASES = {
@@ -34,9 +34,9 @@ def install_bio2bel_module(name: str, connection: Optional[str] = None, rebuild:
     """
     module_name = _SPECIAL_CASES.get(name, f'bio2bel_{name}')
 
-    pykeen_df_path = os.path.join(DATA_DIR, f'{name}.keen.tsv')
-    pykeen_df_summary_path = os.path.join(DATA_DIR, f'{name}.keen.summary.json')
-    json_path = os.path.join(DATA_DIR, f'{name}.bel.json')
+    pykeen_df_path = os.path.join(biokeen_config.data_directory, f'{name}.{biokeen_config.keen_tsv_ext}')
+    pykeen_df_summary_path = os.path.join(biokeen_config.data_directory, f'{name}.keen.summary.json')
+    json_path = os.path.join(biokeen_config.data_directory, f'{name}.bel.json')
 
     if os.path.exists(pykeen_df_path) and not rebuild:
         logger.debug(f'{EMOJI} {module_name} has already been retrieved. See: {pykeen_df_path}')
