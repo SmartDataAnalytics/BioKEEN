@@ -2,6 +2,7 @@
 
 """Prompts for the BioKEEN command line interface."""
 
+import os
 import re
 from collections import OrderedDict
 from typing import Dict, Iterable, Optional
@@ -39,10 +40,25 @@ def prompt_biokeen_config(*, connection: str, rebuild: bool, do_prompt_bio2bel: 
 
     if do_prompt_bio2bel:
         do_prompt_training = False
+        config[TRAINING_SET_PATH] = []
+        for name in select_bio2bel_repository():
+            try:
+                path = install_bio2bel_module(name=name, connection=connection, rebuild=rebuild)
+            except Exception:
+                click.secho(f'failed: {name}', fg='red')
+            else:
+                if os.path.exists(path):
+                    config[TRAINING_SET_PATH].append(f'bio2bel:{name}')
+                else:
+                    click.secho(f'failed: {name}: {path}', fg='red')
+
+        # TODO replace this with less safe code that assumes everything installs no problemo
+        """
         config[TRAINING_SET_PATH] = [
-            install_bio2bel_module(name=name, connection=connection, rebuild=rebuild)
+            f'bio2bel:{name}'
             for name in select_bio2bel_repository()
         ]
+        """
 
     print_section_divider()
 
