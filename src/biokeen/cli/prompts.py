@@ -63,7 +63,7 @@ def select_bio2bel_repository() -> Iterable[str]:
 
     while True:
         try:
-            user_input = click.prompt('> Please select one of the options', value_proc=process_selection)
+            user_input = click.prompt('> Please select one or more of the options', value_proc=process_selection)
         except ValueError as e:
             click.secho(str(e), fg='red')
         else:
