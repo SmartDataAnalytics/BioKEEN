@@ -9,7 +9,10 @@ from pybel.constants import (
     ACTIVITY, ASSOCIATION, CORRELATIVE_RELATIONS, DECREASES, DIRECTLY_DECREASES, DIRECTLY_INCREASES, EQUIVALENT_TO,
     HAS_COMPONENT, INCREASES, IS_A, MODIFIER, OBJECT, PART_OF, REGULATES, RELATION,
 )
-from pybel.dsl import Abundance, BaseEntity, BiologicalProcess, MicroRna, NamedComplexAbundance, Pathology, Protein, Rna
+from pybel.dsl import (
+    Abundance, BaseAbundance, BaseEntity, BiologicalProcess, ComplexAbundance, MicroRna,
+    NamedComplexAbundance, Pathology, Protein, Rna,
+)
 
 
 class Converter(ABC):
@@ -114,6 +117,24 @@ class NamedComplexHasComponentConverter(SimpleTypedPredicate):
             f'{v.namespace}:{v.identifier or v.name}',
             cls.target_relation,
             f'{u.namespace}:{u.identifier or u.name}',
+        )
+
+
+class ListComplexHasComponentConverter(SimpleTypedPredicate):
+    """Converts BEL statements like ``complex(p(X), p(Y), ...) hasComponent p(X)``."""
+
+    subject_type = ComplexAbundance
+    relation = HAS_COMPONENT
+    object_type = Protein
+    target_relation = 'partOf'
+
+    @classmethod
+    def convert(cls, u: ComplexAbundance, v: BaseAbundance, key: str, data: Dict) -> Tuple[str, str, str]:
+        """Convert a BEL edge."""
+        return (
+            f'{v.namespace}:{v.identifier or v.name}',
+            cls.target_relation,
+            str(u),
         )
 
 

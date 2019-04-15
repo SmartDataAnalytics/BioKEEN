@@ -16,9 +16,11 @@ from pybel.dsl import BaseEntity
 from .converters import (
     AssociationConverter, CorrelationConverter, DecreasesAmountConverter, DrugIndicationConverter,
     DrugSideEffectConverter, EquivalenceConverter, IncreasesAmountConverter, IsAConverter,
-    MiRNADecreasesExpressionConverter, MiRNADirectlyDecreasesExpressionConverter, NamedComplexHasComponentConverter,
-    PartOfBiologicalProcess, PartOfNamedComplexConverter, RegulatesActivityConverter, RegulatesAmountConverter,
+    ListComplexHasComponentConverter, MiRNADecreasesExpressionConverter, MiRNADirectlyDecreasesExpressionConverter,
+    NamedComplexHasComponentConverter, PartOfBiologicalProcess, PartOfNamedComplexConverter, RegulatesActivityConverter,
+    RegulatesAmountConverter,
 )
+from ..constants import EMOJI
 
 __all__ = [
     'to_pykeen_path',
@@ -71,7 +73,7 @@ def to_pykeen_df(graph: BELGraph, use_tqdm: bool = True) -> pd.DataFrame:
     it = graph.edges(keys=True)
 
     if use_tqdm:
-        it = tqdm(it, total=graph.number_of_edges(), desc='preparing TSV')
+        it = tqdm(it, total=graph.number_of_edges(), desc=f'{EMOJI} preparing TSV')
 
     triples = (
         get_triple(graph, u, v, key)
@@ -91,6 +93,7 @@ def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Optio
     # order is important
     converters = [
         NamedComplexHasComponentConverter,
+        ListComplexHasComponentConverter,
         PartOfNamedComplexConverter,
         PartOfBiologicalProcess,
         RegulatesActivityConverter,
@@ -111,5 +114,5 @@ def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Optio
         if converter.predicate(u, v, key, data):
             return converter.convert(u, v, key, data)
 
-    logger.info(f'unhandled: {graph.edge_to_bel(u, v, data)}')
+    logger.warning(f'{EMOJI} unhandled: {graph.edge_to_bel(u, v, data)}')
     return None
