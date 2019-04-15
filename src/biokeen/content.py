@@ -97,9 +97,11 @@ def ensure_bio2bel_installation(package: str):
         # Install this package using pip
         # https://stackoverflow.com/questions/12332975/installing-python-module-within-code
         from pip._internal import main as pip_main
+
         with redirect_stdout(sys.stderr):
-            r = pip_main(['install', package])
-        if r != 0:  # command failed
+            pip_exit_code = pip_main(['install', '--user', package])
+
+        if 0 != pip_exit_code:  # command failed
             logger.warning(f'{EMOJI} could not find {package} on PyPI. Try installing from GitHub with:')
             name = package.split("_")[-1]
             logger.warning(f'\n   pip install git+https://github.com/bio2bel/{name}.git\n')
