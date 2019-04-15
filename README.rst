@@ -20,6 +20,7 @@ News:
 Some of the databases are currently not accessible, we will fix the `issues <https://github.com/SmartDataAnalytics/BioKEEN/issues>`_ as fast as possible.
 
 - Hippie is available again
+- Interpro is available again
 
 Share Your Experimental Artifacts
 ---------------------------------
