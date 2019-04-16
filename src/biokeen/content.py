@@ -7,14 +7,14 @@ import logging
 import os
 import sys
 from contextlib import redirect_stdout
-from typing import Optional
+from typing import Optional, Union
 
 import numpy as np
 import pkg_resources
 
 from bio2bel import AbstractManager
 from bio2bel.manager.bel_manager import BELManagerMixin
-from pybel import from_json_path, to_json_path
+from pybel import from_json_path, to_json_path, from_web
 from .constants import EMOJI, biokeen_config
 from .convert import to_pykeen_df, to_pykeen_path, to_pykeen_summary_path
 
@@ -131,3 +131,14 @@ def handle_bio2bel(module_name: str) -> np.ndarray:
         comments='@Comment@ Subject Predicate Object',
         delimiter='\t',
     )
+
+
+def handle_bel_commons(network_id: Union[int, str], host: Optional[str] = None) -> np.ndarray:
+    """Load a BEL document from BEL Commons.
+
+    :param network_id: The network identifier in BEL Commons
+    :param host: The host for BEL Commons. Defaults to the Fraunhofer SCAI public instance.
+    """
+    graph = from_web(int(network_id), host=host)
+    df = to_pykeen_df(graph)
+    return df.to_numpy()
