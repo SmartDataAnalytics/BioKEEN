@@ -95,10 +95,17 @@ class PartOfNamedComplexConverter(_PartOfConverter):
     object_type = NamedComplexAbundance
 
 
-class PartOfBiologicalProcess(_PartOfConverter):
+class SubprocessPartOfBiologicalProcess(_PartOfConverter):
     """Converts BEL statements like ``bp(X) partOf bp(Y)``."""
 
     subject_type = BiologicalProcess
+    object_type = BiologicalProcess
+
+
+class ProteinPartOfBiologicalProcess(_PartOfConverter):
+    """Converts BEL statements like ``p(X) partOf bp(Y)``."""
+
+    subject_type = Protein
     object_type = BiologicalProcess
 
 

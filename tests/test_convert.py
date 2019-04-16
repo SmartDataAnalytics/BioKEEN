@@ -9,7 +9,7 @@ from biokeen.convert import get_triple
 from biokeen.convert.converters import (
     AssociationConverter, Converter, CorrelationConverter, DecreasesAmountConverter, DrugIndicationConverter,
     DrugSideEffectConverter, EquivalenceConverter, IncreasesAmountConverter, IsAConverter,
-    MiRNADecreasesExpressionConverter, NamedComplexHasComponentConverter, PartOfBiologicalProcess,
+    MiRNADecreasesExpressionConverter, NamedComplexHasComponentConverter, SubprocessPartOfBiologicalProcess,
     PartOfNamedComplexConverter, RegulatesActivityConverter, RegulatesAmountConverter,
 )
 from pybel import BELGraph
@@ -51,7 +51,7 @@ nca1 = NamedComplexAbundance('FPLX', '1')
 converters_true_list = [
     (NamedComplexHasComponentConverter, nca1, p1, _rel(HAS_COMPONENT), ('HGNC:1', 'partOf', 'FPLX:1')),
     (PartOfNamedComplexConverter, p1, nca1, _rel(PART_OF), ('HGNC:1', 'partOf', 'FPLX:1')),
-    (PartOfBiologicalProcess, b1, b2, _rel(PART_OF), ('GO:1', 'partOf', 'GO:2')),
+    (SubprocessPartOfBiologicalProcess, b1, b2, _rel(PART_OF), ('GO:1', 'partOf', 'GO:2')),
     (AssociationConverter, r1, r2, _rel(ASSOCIATION), ('HGNC:1', 'association', 'HGNC:2')),
     (AssociationConverter, r1, r2, _assoc('similarity'), ('HGNC:1', 'similarity', 'HGNC:2')),
     (CorrelationConverter, r1, r2, _rel(POSITIVE_CORRELATION), ('HGNC:1', 'positiveCorrelation', 'HGNC:2')),
@@ -73,7 +73,7 @@ converters_true_list = [
                                                             'HGNC:1')),
     # Found in ComPath
     (EquivalenceConverter, b1, b2, _rel(EQUIVALENT_TO), ('GO:1', 'equivalentTo', 'GO:2')),
-    (PartOfBiologicalProcess, b1, b2, _rel(PART_OF), ('GO:1', 'partOf', 'GO:2')),
+    (SubprocessPartOfBiologicalProcess, b1, b2, _rel(PART_OF), ('GO:1', 'partOf', 'GO:2')),
     # Found in HSDN
 ]
 

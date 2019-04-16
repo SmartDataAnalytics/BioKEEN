@@ -17,8 +17,8 @@ from .converters import (
     AssociationConverter, CorrelationConverter, DecreasesAmountConverter, DrugIndicationConverter,
     DrugSideEffectConverter, EquivalenceConverter, IncreasesAmountConverter, IsAConverter,
     ListComplexHasComponentConverter, MiRNADecreasesExpressionConverter, MiRNADirectlyDecreasesExpressionConverter,
-    NamedComplexHasComponentConverter, PartOfBiologicalProcess, PartOfNamedComplexConverter, RegulatesActivityConverter,
-    RegulatesAmountConverter,
+    NamedComplexHasComponentConverter, PartOfNamedComplexConverter, ProteinPartOfBiologicalProcess,
+    RegulatesActivityConverter, RegulatesAmountConverter, SubprocessPartOfBiologicalProcess,
 )
 from ..constants import EMOJI
 
@@ -95,7 +95,8 @@ def get_triple(graph: BELGraph, u: BaseEntity, v: BaseEntity, key: str) -> Optio
         NamedComplexHasComponentConverter,
         ListComplexHasComponentConverter,
         PartOfNamedComplexConverter,
-        PartOfBiologicalProcess,
+        SubprocessPartOfBiologicalProcess,
+        ProteinPartOfBiologicalProcess,
         RegulatesActivityConverter,
         MiRNADecreasesExpressionConverter,
         MiRNADirectlyDecreasesExpressionConverter,
