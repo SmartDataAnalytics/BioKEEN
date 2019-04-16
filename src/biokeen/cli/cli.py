@@ -20,7 +20,7 @@ import click
 from click_default_group import DefaultGroup
 
 from bio2bel.constants import get_global_connection
-from biokeen.constants import VERSION, biokeen_config
+from biokeen.constants import EMOJI, VERSION, biokeen_config
 from pykeen.constants import VERSION as PYKEEN_VERSION
 
 connection_option = click.option(
@@ -106,6 +106,7 @@ def get(names: List[str], connection: str, rebuild: bool, verbose: bool):
     from biokeen.content import install_bio2bel_module
 
     for name in names:
+        click.secho(f'{EMOJI} Getting {name}', fg='cyan')
         install_bio2bel_module(name, connection, rebuild)
 
 

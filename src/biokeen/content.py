@@ -39,11 +39,11 @@ def install_bio2bel_module(name: str, connection: Optional[str] = None, rebuild:
     json_path = os.path.join(biokeen_config.data_directory, f'{name}.bel.json')
 
     if os.path.exists(pykeen_df_path) and not rebuild:
-        logger.debug(f'{EMOJI} {module_name} has already been retrieved. See: {pykeen_df_path}')
+        logger.info(f'{EMOJI} {module_name} has already been retrieved. See: {pykeen_df_path}')
         return pykeen_df_path
 
     if os.path.exists(json_path) and not rebuild:
-        logger.debug(f'{EMOJI} loaded {module_name} JSON: {json_path}')
+        logger.info(f'{EMOJI} loaded {module_name} JSON: {json_path}')
         graph = from_json_path(json_path)
         df = to_pykeen_df(graph)
         to_pykeen_path(df, pykeen_df_path)
@@ -99,7 +99,7 @@ def ensure_bio2bel_installation(package: str):
         from pip._internal import main as pip_main
 
         with redirect_stdout(sys.stderr):
-            pip_exit_code = pip_main(['install', package])
+            pip_exit_code = pip_main(['install', '-q', package])  # -q means quiet
 
         if 0 != pip_exit_code:  # command failed
             logger.warning(f'{EMOJI} could not find {package} on PyPI. Try installing from GitHub with:')
@@ -110,7 +110,7 @@ def ensure_bio2bel_installation(package: str):
         try:
             return importlib.import_module(package)
         except ImportError:
-            logger.critical(f'{EMOJI} failed to import {package}')
+            logger.exception(f'{EMOJI} failed to import {package}')
             sys.exit(1)
 
     return b_module
