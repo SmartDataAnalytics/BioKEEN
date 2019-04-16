@@ -17,7 +17,8 @@ be started with the command “biokeen” from a terminal.
 
 News:
 -----
-All databases are accessible again.
+- New database integrated: DDR (disease-disease relations) Menche, J., et al. (2015)
+- All databases accessible again
 
 Share Your Experimental Artifacts
 ---------------------------------
