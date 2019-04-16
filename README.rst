@@ -17,7 +17,7 @@ be started with the command “biokeen” from a terminal.
 
 News:
 -----
-All databases are available again.
+All databases are accessible again.
 
 Share Your Experimental Artifacts
 ---------------------------------
