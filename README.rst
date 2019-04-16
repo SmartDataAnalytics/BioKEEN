@@ -17,7 +17,7 @@ be started with the command “biokeen” from a terminal.
 
 News:
 -----
-Some of the databases are currently not accessible, we will fix the `issues <https://github.com/SmartDataAnalytics/BioKEEN/issues>`_ as fast as possible.
+All databases are available again.
 
 - Hippie is available again
 - Interpro is available again
