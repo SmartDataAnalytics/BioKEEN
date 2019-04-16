@@ -19,9 +19,6 @@ News:
 -----
 All databases are available again.
 
-- Hippie is available again
-- Interpro is available again
-
 Share Your Experimental Artifacts
 ---------------------------------
 You can share you trained KGE models along the other experimental artifacts through the `KEEN-Model-Zoo <https://github.com/SmartDataAnalytics/KEEN-Model-Zoo>`_.
