@@ -9,8 +9,8 @@ from biokeen.convert import get_triple
 from biokeen.convert.converters import (
     AssociationConverter, Converter, CorrelationConverter, DecreasesAmountConverter, DrugIndicationConverter,
     DrugSideEffectConverter, EquivalenceConverter, IncreasesAmountConverter, IsAConverter,
-    MiRNADecreasesExpressionConverter, NamedComplexHasComponentConverter, SubprocessPartOfBiologicalProcess,
-    PartOfNamedComplexConverter, RegulatesActivityConverter, RegulatesAmountConverter,
+    MiRNADecreasesExpressionConverter, NamedComplexHasComponentConverter,
+    PartOfNamedComplexConverter, RegulatesActivityConverter, RegulatesAmountConverter, SubprocessPartOfBiologicalProcess
 )
 from pybel import BELGraph
 from pybel.constants import (

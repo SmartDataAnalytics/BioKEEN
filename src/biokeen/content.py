@@ -14,7 +14,7 @@ import pkg_resources
 
 from bio2bel import AbstractManager
 from bio2bel.manager.bel_manager import BELManagerMixin
-from pybel import from_json_path, to_json_path, from_web
+from pybel import from_json_path, from_web, to_json_path
 from .constants import EMOJI, biokeen_config
 from .convert import to_pykeen_df, to_pykeen_path, to_pykeen_summary_path
 
