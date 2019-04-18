@@ -36,7 +36,7 @@ class BiokeenConfig(easy_config.EasyConfig):
 biokeen_config = BiokeenConfig.load()
 os.makedirs(biokeen_config.data_directory, exist_ok=True)
 
-VERSION = '0.0.13'
+VERSION = '0.0.14-dev'
 EMOJI = '🍩'
 
 # Available databases
