@@ -148,7 +148,7 @@ References
 ----------
 
 .. [2] Hoyt, C., *et al.* (2019). `Integration of Structured Biological Data Sources using Biological Expression Language
-       <https://doi.org/10.1101/631812 >`_. *bioRxiv* , 631812.
+    <https://doi.org/10.1101/631812>`_. *bioRxiv*, 631812.
  
 .. |build| image:: https://travis-ci.org/SmartDataAnalytics/BioKEEN.svg?branch=master
     :target: https://travis-ci.org/SmartDataAnalytics/BioKEEN
