@@ -8,7 +8,7 @@ currently available for BioKEEN. Furthermore, BioKEEN can be run in *training mo
 of hyper-parameter values, or in *hyper-parameter optimization mode* to find suitable hyper-parameter values from set
 of user defined values.
 
-Through the integration of the `Bio2BEL <https://github.com/bio2bel>`_ software numerous biomedical databases are
+Through the integration of the `Bio2BEL <https://github.com/bio2bel>`_ [2]_ software numerous biomedical databases are
 directly accessible within BioKEEN.
 
 BioKEEN can also be run without having experience in programing by using its interactive command line interface that can
@@ -144,6 +144,12 @@ To download and structure the data from a `Bio2BEL <https://github.com/bio2bel>`
 
 Where ``<name>`` can be any repository name in Bio2BEL such as ``hippie``, ``mirtarbase``.
 
+References
+----------
+
+.. [2] Hoyt, C., *et al.* (2019). `Integration of Structured Biological Data Sources using Biological Expression Language
+       <https://doi.org/10.1101/631812 >`_. *bioRxiv* , 631812.
+ 
 .. |build| image:: https://travis-ci.org/SmartDataAnalytics/BioKEEN.svg?branch=master
     :target: https://travis-ci.org/SmartDataAnalytics/BioKEEN
 
