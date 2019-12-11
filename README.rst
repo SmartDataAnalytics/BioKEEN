@@ -14,12 +14,6 @@ directly accessible within BioKEEN.
 BioKEEN can also be run without having experience in programing by using its interactive command line interface that can
 be started with the command “biokeen” from a terminal.
 
-
-News:
------
-- New database integrated: DDR (disease-disease relations) Menche, J., et al. (2015)
-- All databases accessible again
-
 Share Your Experimental Artifacts
 ---------------------------------
 You can share you trained KGE models along the other experimental artifacts through the `KEEN-Model-Zoo <https://github.com/SmartDataAnalytics/KEEN-Model-Zoo>`_.
@@ -33,23 +27,17 @@ A brief tutorial on how to get started with BioKEEN is available `here <https://
     :target: https://vimeo.com/314252656
 
 
-.. |br| raw:: html
-
-   <br />
-
-|br| Further tutorials are can be found in the `notebooks directory <https://github.com/SmartDataAnalytics/BioKEEN/tree/master/notebooks>`_ and in our `documentation <https://biokeen.readthedocs.io/en/latest/>`_.
+Further tutorials are can be found in the `notebooks directory <https://github.com/SmartDataAnalytics/BioKEEN/tree/master/notebooks>`_ and in our `documentation <https://biokeen.readthedocs.io/en/latest/>`_.
 
 Citation
 --------
 If you find BioKEEN useful in your work, please consider citing:
 
 .. [1] Ali, M., *et al.* (2019). `BioKEEN: A library for learning and evaluating biological knowledge graph embeddings
-       <https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btz117/5320556>`_. *Bioinformatics* , btz117.
+       <https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btz117/5320556>`_. *Bioinformatics*, btz117.
 
 **Note**: ComPath has been updated, for this reason we have uploaded the dataset version that we have used for
 our experiments: `dataset <https://github.com/SmartDataAnalytics/KEEN-Model-Zoo/blob/master/bioinformatics/ComPath/compath.keen.tsv>`_
-
-
 
 Installation |pypi_version| |python_versions| |pypi_license|
 ------------------------------------------------------------
