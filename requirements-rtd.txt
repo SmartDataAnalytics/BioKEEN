@@ -1,5 +1,5 @@
-pybel
-bio2bel
+pybel<0.14.0
+bio2bel<0.3.0
 tqdm
 pandas
 sphinx
