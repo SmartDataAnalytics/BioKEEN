@@ -19,6 +19,7 @@ from typing import List, Optional, TextIO
 import click
 from click_default_group import DefaultGroup
 
+from bio2bel.automate import ensure_tsv
 from bio2bel.constants import get_global_connection
 from biokeen.constants import EMOJI, VERSION, biokeen_config
 from pykeen.constants import VERSION as PYKEEN_VERSION
@@ -53,7 +54,6 @@ def start(config: Optional[TextIO], connection: str, rebuild: bool, no_prompt_bi
         from .prompts import prompt_biokeen_config
         config = prompt_biokeen_config(
             connection=connection,
-            rebuild=rebuild,
             do_prompt_bio2bel=(not no_prompt_bio2bel),
         )
 
@@ -94,20 +94,17 @@ def clear():
 @data.command()
 @click.argument('names', nargs=-1)
 @connection_option
-@click.option('-r', '--rebuild', is_flag=True)
 @click.option('-v', '--verbose', count=True)
-def get(names: List[str], connection: str, rebuild: bool, verbose: bool):
+def get(names: List[str], connection: str, verbose: bool):
     """Install, populate, and build Bio2BEL repository."""
     if verbose == 1:
         logging.basicConfig(level=logging.INFO)
     elif verbose == 2:
         logging.basicConfig(level=logging.DEBUG)
 
-    from biokeen.content import install_bio2bel_module
-
     for name in names:
         click.secho(f'{EMOJI} Getting {name}', fg='cyan')
-        install_bio2bel_module(name, connection, rebuild)
+        ensure_tsv(name, manager_kwargs=dict(connection=connection))
 
 
 if __name__ == '__main__':

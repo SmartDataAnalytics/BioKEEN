@@ -9,19 +9,23 @@ from typing import Dict, Iterable, Optional
 
 import click
 
+from bio2bel.automate import ensure_tsv
 from pykeen.cli.prompt import prompt_config
 from pykeen.cli.utils.cli_print_msg_helper import print_section_divider
 from pykeen.constants import TRAINING_SET_PATH
 from .messages import print_intro, print_welcome_message
 from ..constants import ID_TO_DATABASE_MAPPING
-from ..content import install_bio2bel_module
 
 __all__ = [
     'prompt_biokeen_config',
 ]
 
 
-def prompt_biokeen_config(*, connection: str, rebuild: bool, do_prompt_bio2bel: Optional[bool] = None) -> Dict:
+def prompt_biokeen_config(
+    *,
+    connection: str,
+    do_prompt_bio2bel: Optional[bool] = None,
+) -> Dict:
     """Configure experiments."""
     config = OrderedDict()
 
@@ -43,7 +47,7 @@ def prompt_biokeen_config(*, connection: str, rebuild: bool, do_prompt_bio2bel: 
         config[TRAINING_SET_PATH] = []
         for name in select_bio2bel_repository():
             try:
-                path = install_bio2bel_module(name=name, connection=connection, rebuild=rebuild)
+                path = ensure_tsv(name=name, manager_kwargs=dict(connection=connection))
             except Exception:
                 click.secho(f'failed: {name}', fg='red')
             else:
@@ -51,14 +55,6 @@ def prompt_biokeen_config(*, connection: str, rebuild: bool, do_prompt_bio2bel: 
                     config[TRAINING_SET_PATH].append(f'bio2bel:{name}')
                 else:
                     click.secho(f'failed: {name}: {path}', fg='red')
-
-        # TODO replace this with less safe code that assumes everything installs no problemo
-        """
-        config[TRAINING_SET_PATH] = [
-            f'bio2bel:{name}'
-            for name in select_bio2bel_repository()
-        ]
-        """
 
     print_section_divider()
 
