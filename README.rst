@@ -1,7 +1,11 @@
-BioKEEN |build| |coverage| |docs| |zenodo|
-==========================================
+WARNING: This repository is superceded by `PyKEEN <https://github.com/pykeen/pykeen>`_ and is therefore no longer maintained.
+=============================================================================================================================
+BioKEEN 
+-------
+|build| |coverage| |docs| |zenodo|
+
 BioKEEN (Biological KnowlEdge EmbeddiNgs) is a package for training and evaluating biological knowledge graph
-embeddings built on `PyKEEN <https://github.com/SmartDataAnalytics/PyKEEN>`_.
+embeddings built on .
 
 Because we use PyKEEN as the underlying software package, implementations of 10 knowledge graph embedding models are
 currently available for BioKEEN. Furthermore, BioKEEN can be run in *training mode* in which users provide their own set
